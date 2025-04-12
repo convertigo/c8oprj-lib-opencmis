@@ -1,0 +1,119 @@
+accessibility: Hidden
+↓Connect [steps.SimpleStep-1744444877776]: 
+  expression: |
+    '// Import required Java classes using JavaImporter
+    var cmis = new JavaImporter(
+        org.apache.chemistry.opencmis.client.api,
+        org.apache.chemistry.opencmis.client.runtime,
+        org.apache.chemistry.opencmis.commons.enums,
+        org.apache.chemistry.opencmis.commons,
+        java.util
+    );
+    
+    var error = null
+    var folders = []
+    var session = null
+    
+    with (cmis) {
+        // Set connection parameters
+    	try {
+    	    var parameters = new HashMap();
+    	    parameters.put(SessionParameter.USER, user+ "");
+    	    parameters.put(SessionParameter.PASSWORD, password + "");
+    	    parameters.put(SessionParameter.ATOMPUB_URL,  url +"");
+    	    parameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
+    	    parameters.put(SessionParameter.REPOSITORY_ID, repoID + "");
+    	
+    	    // Create session factory and session
+    	    var factory = SessionFactoryImpl.newInstance();
+    	    var repositories = factory.getRepositories(parameters);
+    	    session = repositories.get(0).createSession();
+    		
+    		// Store session in Convertigo session
+    		context.httpSession.setAttribute("CIMSSession", session);
+    			
+    	    // Get root folder and print its name
+    	    var root = session.getRootFolder();
+    	    log.warn("Root folder: " + root.getName());
+    	
+    	    // List children of the root folder
+    	    var children = root.getChildren();
+    	    var it = children.iterator();
+    	    while (it.hasNext()) {
+    	        var child = it.next();
+    			folders.push({
+    				name: child.getName(),
+    				path: child.getPaths().get(0),
+    			});
+    	        log.warn(" - " + child.getName() + " (" + child.getType().getDisplayName() + ")");
+    	    }
+    	} catch (e) {
+    		// Handle exceptions
+    		log.error("Error: " + e.message);
+    		error = e.message;
+    		if (e.cause) {
+    			log.error("Cause: " + e.cause.message);
+    		}
+    	}
+    }
+    '
+↓jIf [steps.IfStep-1744454246644]: 
+  condition: error != null
+  ↓Error_structure [steps.XMLErrorStep-1744454258494]: 
+    message: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: JS
+          - →→: error
+  ↓Return [steps.ReturnStep-1744454529942]: 
+↓object [steps.JsonToXmlStep-1744454573792]: 
+  jsonObject: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: JS
+        - →→: folders
+  key: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: PLAIN
+        - →→: folders
+↓user [variables.RequestableVariable-1744453414709]: 
+↓password [variables.RequestableVariable-1744453422589]: 
+  value: 
+    - ↑ciphered: true
+    - ↑traceable: false
+    - →→: xd8e180806a1c1d83a6255212121ab827
+  visibility: '-1'
+↓url [variables.RequestableVariable-1744453432764]: 
+  value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
+↓repoID [variables.RequestableVariable-1744453454027]: 
+  value: '-default-'
+↓TestKO [core.TestCase]: 
+  ↓user [variables.TestCaseVariable-1744454283065]: 
+    value: adminXX
+  ↓password [variables.TestCaseVariable-1744454283068]: 
+    value: 
+      - ↑ciphered: true
+      - ↑traceable: false
+      - →→: x144a9012e09548e8f0eb9a15054ed371
+    visibility: '-1'
+  ↓url [variables.TestCaseVariable-1744454283071]: 
+    value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
+  ↓repoID [variables.TestCaseVariable-1744454283074]: 
+    value: '-default-'
+↓TestOK [core.TestCase]: 
+  ↓user [variables.TestCaseVariable-1744453545516]: 
+    value: admin
+  ↓password [variables.TestCaseVariable-1744453545518]: 
+    value: 
+      - ↑ciphered: true
+      - ↑traceable: false
+      - →→: x144a9012e09548e8f0eb9a15054ed371
+    visibility: '-1'
+  ↓url [variables.TestCaseVariable-1744453637027]: 
+    value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
+  ↓repoID [variables.TestCaseVariable-1744453637029]: 
+    value: '-default-'

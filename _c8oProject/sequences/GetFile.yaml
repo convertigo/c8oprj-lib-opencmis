@@ -1,0 +1,88 @@
+accessibility: Hidden
+↓GetFile [steps.SimpleStep-1744458011199]: 
+  expression: |
+    'var cmis = new JavaImporter(
+        org.apache.chemistry.opencmis.client.api,
+        org.apache.chemistry.opencmis.client.runtime,
+        org.apache.chemistry.opencmis.commons.enums,
+        org.apache.chemistry.opencmis.commons,
+        java.util,
+        java.io
+    );
+    
+    var outputPath = null;
+    var error = null
+    
+    with (cmis) {
+    	try {
+    		
+    		// get CIMSSession
+    		var session = context.httpSession.getAttribute("CIMSSession");
+    		
+    	    // Get document by path
+    	    var doc = session.getObjectByPath(docPath);
+    	    log.warn("Found document: " + doc.getName());
+    	
+    	    // Get the content stream
+    	    var contentStream = doc.getContentStream();
+    	    var inputStream = contentStream.getStream();
+    	
+    		// Create temp file (prefix, suffix)
+    		var tempFile = File.createTempFile("C8oCIMS_", "_" + doc.getName());
+    		var fileOut = new FileOutputStream(tempFile);
+    	
+    	    // Buffer to read/write
+    	    var buffer = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, 10*1024);
+    	    var bytesRead = 0;
+    	
+    	    while ((bytesRead = inputStream.read(buffer)) !== -1) {
+    	        fileOut.write(buffer, 0, bytesRead);
+    	    }
+    	
+    	    // Close streams
+    	    inputStream.close();
+    	    fileOut.close();
+    	
+    	    log.warn("File saved to: " + 	tempFile.getAbsolutePath());
+    		outputPath = tempFile.getAbsolutePath();
+    
+    	} catch (e) {
+    		// Handle exceptions
+    		log.error("Error: " + e.message);
+    		error = e.message;
+    		if (e.cause) {
+    			log.error("Cause: " + e.cause.message);
+    		}
+    	}
+    }
+    '
+↓jIf [steps.IfStep-1744458011202]: 
+  condition: error != null
+  ↓Error_structure [steps.XMLErrorStep-1744458011205]: 
+    message: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: JS
+          - →→: error
+  ↓Return [steps.ReturnStep-1744458011208]: 
+↓filePath [steps.JsonFieldStep-1744458940513]: 
+  key: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: PLAIN
+        - →→: outputPath
+  value: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: JS
+        - →→: outputPath
+↓docPath [variables.RequestableVariable-1744458011217]: 
+↓TestKO [core.TestCase]: 
+  ↓docPath [variables.TestCaseVariable-1744461263910]: 
+    value: /MyFolder/FAKE.DOC
+↓TestOK [core.TestCase]: 
+  ↓docPath [variables.TestCaseVariable-1744458375381]: 
+    value: /MyFolder/TesseraSanitariaTati2025.pdf
