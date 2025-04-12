@@ -83,7 +83,7 @@ comment: |
         - ↑mode: JS
         - →→: outputPath
 ↓docPath [variables.RequestableVariable-1744458011217]: 
-  comment: CIMS Path of the file to retrive. For example '/MyFolder/Myfile.doc'
+  comment: CIMS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
 ↓TestKO [core.TestCase]: 
   ↓docPath [variables.TestCaseVariable-1744461263910]: 
     value: /MyFolder/FAKE.DOC

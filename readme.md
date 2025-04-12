@@ -83,7 +83,7 @@ Gets a file from CIMS repository. The file will be retrieved and saved in a temp
 <th>name</th><th>comment</th>
 </tr>
 <tr>
-<td>docPath</td><td>CIMS Path of the file to retrive. For example '/MyFolder/Myfile.doc'</td>
+<td>docPath</td><td>CIMS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'</td>
 </tr>
 </table>
 
