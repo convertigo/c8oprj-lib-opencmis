@@ -30,11 +30,18 @@ comment: |
     	    var fileInputStream = new FileInputStream(file);
     	    var fileLength = file.length();
     	
+    		// 🧠 3. Try to detect MIME type
+    		var mimeType = java.nio.file.Files.probeContentType(file.toPath());
+    		if (mimeType == null) {
+    		     mimeType = "application/octet-stream"; // fallback
+    		}
+    		log.debug("🧪 Detected MIME type: " + mimeType);
+    		
     	    // Create CMIS content stream
     	    var contentStream = session.getObjectFactory().createContentStream(
     	        fileName,
     	        fileLength,
-    	        "text/plain", // Change MIME type if needed
+    	        mimeType, 
     	        fileInputStream
     	    );
     	
