@@ -73,6 +73,9 @@ Has to be called before any other Sequence. This will establish a Session betwee
 
 ### GetFile
 
+Gets a file from CIMS repository. The file will be retrieved and saved in a temp directory. When you finish using this file  you should delete it. The sequence will return The full path of the output file.
+
+
 **variables**
 
 <table>
@@ -80,12 +83,15 @@ Has to be called before any other Sequence. This will establish a Session betwee
 <th>name</th><th>comment</th>
 </tr>
 <tr>
-<td>docPath</td><td></td>
+<td>docPath</td><td>CIMS Path of the file to retrive. For example '/MyFolder/Myfile.doc'</td>
 </tr>
 </table>
 
 ### PutFile
 
+Puts a file in a CIMS repository. The Sequence will return the folder were the file has been placed.
+
+
 **variables**
 
 <table>
@@ -93,10 +99,10 @@ Has to be called before any other Sequence. This will establish a Session betwee
 <th>name</th><th>comment</th>
 </tr>
 <tr>
-<td>filePath</td><td></td>
+<td>filePath</td><td>Full Path of the file to upload to CIMS. </td>
 </tr>
 <tr>
-<td>folderPath</td><td></td>
+<td>folderPath</td><td>Target path in the CIMS. for example '/MyFolder'</td>
 </tr>
 </table>
 

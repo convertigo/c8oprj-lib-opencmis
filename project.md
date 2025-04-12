@@ -80,11 +80,12 @@ User name to acess the CIMS
 
 </p></blockquote></details>
 
-<details><summary><b>GetFile</b></summary><blockquote><p>
+<details><summary><b>GetFile</b> : Gets a file from CIMS repository</summary><blockquote><p>
 
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") GetFile
 
+Gets a file from CIMS repository. The file will be retrieved and saved in a temp directory. When you finish using this file  you should delete it. The sequence will return The full path of the output file.
 
 
 <span style="color:DarkGoldenRod">Variables</span>
@@ -103,18 +104,19 @@ comment
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;docPath
 </td>
 <td>
-
+CIMS Path of the file to retrive. For example '/MyFolder/Myfile.doc'
 </td>
 </tr>
 </table>
 
 </p></blockquote></details>
 
-<details><summary><b>PutFile</b></summary><blockquote><p>
+<details><summary><b>PutFile</b> : Puts a file in a CIMS repository</summary><blockquote><p>
 
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") PutFile
 
+Puts a file in a CIMS repository. The Sequence will return the folder were the file has been placed.
 
 
 <span style="color:DarkGoldenRod">Variables</span>
@@ -133,7 +135,7 @@ comment
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;filePath
 </td>
 <td>
-
+Full Path of the file to upload to CIMS. 
 </td>
 </tr>
 <tr>
@@ -141,7 +143,7 @@ comment
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;folderPath
 </td>
 <td>
-
+Target path in the CIMS. for example '/MyFolder'
 </td>
 </tr>
 </table>

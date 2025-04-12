@@ -1,4 +1,7 @@
 accessibility: Hidden
+comment: |
+  Gets a file from CIMS repository. The file will be retrieved and saved in a temp directory. When you finish using this file  you should delete it. The sequence will return The full path of the output file.
+  
 ↓GetFile [steps.SimpleStep-1744458011199]: 
   expression: |
     'var cmis = new JavaImporter(
@@ -80,6 +83,7 @@ accessibility: Hidden
         - ↑mode: JS
         - →→: outputPath
 ↓docPath [variables.RequestableVariable-1744458011217]: 
+  comment: CIMS Path of the file to retrive. For example '/MyFolder/Myfile.doc'
 ↓TestKO [core.TestCase]: 
   ↓docPath [variables.TestCaseVariable-1744461263910]: 
     value: /MyFolder/FAKE.DOC

@@ -1,4 +1,7 @@
 accessibility: Hidden
+comment: |
+  Puts a file in a CIMS repository. The Sequence will return the folder were the file has been placed.
+  
 ↓PutFile [steps.SimpleStep-1744461342356]: 
   expression: |
     'var cmis = new JavaImporter(
@@ -67,7 +70,9 @@ accessibility: Hidden
           - →→: error
   ↓Return [steps.ReturnStep-1744461342365]: 
 ↓folderPath [variables.RequestableVariable-1744461342371]: 
+  comment: Target path in the CIMS. for example '/MyFolder'
 ↓filePath [variables.RequestableVariable-1744461634939]: 
+  comment: Full Path of the file to upload to CIMS. 
 ↓TestOK [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1744461817295]: 
     value: /MyFolder
