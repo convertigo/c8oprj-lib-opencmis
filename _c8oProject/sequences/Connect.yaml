@@ -1,4 +1,5 @@
 accessibility: Hidden
+comment: Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CIMS (Alfresco). The session will be automatically held in the Convertigo Session.
 ↓Connect [steps.SimpleStep-1744444877776]: 
   expression: |
     '// Import required Java classes using JavaImporter
@@ -81,15 +82,19 @@ accessibility: Hidden
         - ↑mode: PLAIN
         - →→: folders
 ↓user [variables.RequestableVariable-1744453414709]: 
+  comment: User name to acess the CIMS
 ↓password [variables.RequestableVariable-1744453422589]: 
+  comment: Password to access the CIMS
   value: 
     - ↑ciphered: true
     - ↑traceable: false
     - →→: xd8e180806a1c1d83a6255212121ab827
   visibility: '-1'
 ↓url [variables.RequestableVariable-1744453432764]: 
+  comment: Target CIMS URL, for example use http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom for Alfresco
   value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
 ↓repoID [variables.RequestableVariable-1744453454027]: 
+  comment: The repository ID to access. use '-default-' for Alfresco
   value: '-default-'
 ↓TestKO [core.TestCase]: 
   ↓user [variables.TestCaseVariable-1744454283065]: 
