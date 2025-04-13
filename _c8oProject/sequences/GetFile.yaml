@@ -22,6 +22,10 @@ comment: |
     		// get CIMSSession
     		var session = context.httpSession.getAttribute("CIMSSession");
     		
+    		if (session == null) {
+    			throw new Error("Session not found. Please connect first.");
+    		}
+    		
     	    // Get document by path
     	    var doc = session.getObjectByPath(docPath);
     	    log.warn("Found document: " + doc.getName());

@@ -51,6 +51,10 @@ For more technical informations : [documentation](./project.md)
 
 Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CIMS (Alfresco). The session will be automatically held in the Convertigo Session.
 
+Will return the list of folders  of the users root Directory with folder name and folder path.
+
+
+
 **variables**
 
 <table>
@@ -99,7 +103,7 @@ Puts a file in a CIMS repository. The Sequence will return the folder were the f
 <th>name</th><th>comment</th>
 </tr>
 <tr>
-<td>filePath</td><td>Full Path of the file to upload to CIMS. </td>
+<td>filePaths</td><td>Full Paths of the files to upload to CIMS. </td>
 </tr>
 <tr>
 <td>folderPath</td><td>Target path in the CIMS. for example '/MyFolder'</td>

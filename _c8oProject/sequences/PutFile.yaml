@@ -14,49 +14,61 @@ comment: |
     );
     
     var error = null
+    var res = [];
     
     with (cmis) {
     	try {
     		// get CIMSSession
     		var session = context.httpSession.getAttribute("CIMSSession");
-    
+            if (session == null) {
+    			throw new Error("Session not found. Please connect first.");
+    		}
     	    var folder = session.getObjectByPath(folderPath);
     	    log.debug("Uploading to: " + folder.getPaths().toArray()[0]);
     	
-    	    // Local file to upload
-    	    var file = new File(filePath);
-    	
-    	    var fileName = file.getName();
-    	    var fileInputStream = new FileInputStream(file);
-    	    var fileLength = file.length();
-    	
-    		// 🧠 3. Try to detect MIME type
-    		var mimeType = java.nio.file.Files.probeContentType(file.toPath());
-    		if (mimeType == null) {
-    		     mimeType = "application/octet-stream"; // fallback
-    		}
-    		log.debug("🧪 Detected MIME type: " + mimeType);
+    		// for each filePaths[] loop and upload
+    		for (var i = 0; i < filePaths.length; i++) {	
+    		    // Local file to upload
+    		    var file = new File(filePaths[i]);
     		
-    	    // Create CMIS content stream
-    	    var contentStream = session.getObjectFactory().createContentStream(
-    	        fileName,
-    	        fileLength,
-    	        mimeType, 
-    	        fileInputStream
-    	    );
-    	
-    	    // Document properties
-    	    var props = new HashMap();
-    	    props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
-    	    props.put(PropertyIds.NAME, fileName);
-    	
-    	    // Upload file (create document in the folder)
-    	    var newDoc = folder.createDocument(props, contentStream, VersioningState.MAJOR);
-    	    log.debug("✅ File uploaded: " + newDoc.getName());
-    	    log.debug("CMIS path: " + newDoc.getPaths().toArray()[0]);
-    	
-    	    // Clean up
-    	    fileInputStream.close();
+    		    var fileName = file.getName();
+    		    var fileInputStream = new FileInputStream(file);
+    		    var fileLength = file.length();
+    		
+    			// 🧠 3. Try to detect MIME type
+    			var mimeType = java.nio.file.Files.probeContentType(file.toPath());
+    			if (mimeType == null) {
+    			     mimeType = "application/octet-stream"; // fallback
+    			}
+    			log.debug("🧪 Detected MIME type: " + mimeType);
+    			
+    		    // Create CMIS content stream
+    		    var contentStream = session.getObjectFactory().createContentStream(
+    		        fileName,
+    		        fileLength,
+    		        mimeType, 
+    		        fileInputStream
+    		    );
+    		
+    		    // Document properties
+    		    var props = new HashMap();
+    		    props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
+    		    props.put(PropertyIds.NAME, fileName);
+    		
+    		    // Upload file (create document in the folder)
+    		    var newDoc = folder.createDocument(props, contentStream, VersioningState.MAJOR);
+    		    log.debug("✅ File uploaded: " + newDoc.getName());
+    		    log.debug("CMIS path: " + newDoc.getPaths().toArray()[0]);
+    			
+    			res.push({
+    				"filePath": newDoc.getPaths().toArray()[0],
+    				"mimeType": mimeType
+    			});
+    		    // Clean up
+    		    fileInputStream.close();
+    			contentStream.getStream().close();
+    		}
+    		log.debug("Files uploaded: " + JSON.stringify(res));
     	} catch (e) {
     		// Handle exceptions
     		error = e.message;
@@ -76,12 +88,31 @@ comment: |
           - ↑mode: JS
           - →→: error
   ↓Return [steps.ReturnStep-1744461342365]: 
+↓object [steps.JsonToXmlStep-1744530956568]: 
+  jsonObject: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: JS
+        - →→: res
+  key: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: PLAIN
+        - →→: result
 ↓folderPath [variables.RequestableVariable-1744461342371]: 
   comment: Target path in the CIMS. for example '/MyFolder'
-↓filePath [variables.RequestableVariable-1744461634939]: 
-  comment: Full Path of the file to upload to CIMS. 
+↓filePaths [variables.RequestableMultiValuedVariable-1744531147985]: 
+  comment: Full Paths of the files to upload to CIMS. 
+  isFileUpload: true
 ↓TestOK [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1744461817295]: 
     value: /MyFolder
-  ↓filePath [variables.TestCaseVariable-1744461817297]: 
-    value: C:\Users\opic_000\Downloads\helm-v3.17.0-linux-amd64.tar.gz
+  ↓filePaths [variables.TestCaseMultiValuedVariable-1744532244203]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: C:\Users\opic_000\Downloads\helm-v3.17.0-linux-amd64.tar.gz

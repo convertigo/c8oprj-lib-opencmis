@@ -33,6 +33,10 @@ does nothing
 
 Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CIMS (Alfresco). The session will be automatically held in the Convertigo Session.
 
+Will return the list of folders  of the users root Directory with folder name and folder path.
+
+
+
 <span style="color:DarkGoldenRod">Variables</span>
 
 <table>
@@ -132,10 +136,10 @@ comment
 </tr>
 <tr>
 <td>
-<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;filePath
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/multivaluedvariable_color_16x16.png?raw=true "  alt="RequestableMultiValuedVariable" >&nbsp;filePaths
 </td>
 <td>
-Full Path of the file to upload to CIMS. 
+Full Paths of the files to upload to CIMS. 
 </td>
 </tr>
 <tr>

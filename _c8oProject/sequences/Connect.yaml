@@ -1,5 +1,10 @@
 accessibility: Hidden
-comment: Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CIMS (Alfresco). The session will be automatically held in the Convertigo Session.
+comment: |
+  Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CIMS (Alfresco). The session will be automatically held in the Convertigo Session.
+  
+  Will return the list of folders  of the users root Directory with folder name and folder path.
+  
+  
 ↓Connect [steps.SimpleStep-1744444877776]: 
   expression: |
     '// Import required Java classes using JavaImporter
