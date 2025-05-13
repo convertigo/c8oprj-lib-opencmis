@@ -1,6 +1,6 @@
 accessibility: Hidden
 comment: |
-  Gets a file from CIMS repository. The file will be retrieved and saved in a temp directory. When you finish using this file  you should delete it. The sequence will return The full path of the output file.
+  Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file  you should delete it. The sequence will return The full path of the output file.
   
 ↓GetFile [steps.SimpleStep-1744458011199]: 
   expression: |
@@ -19,8 +19,8 @@ comment: |
     with (cmis) {
     	try {
     		
-    		// get CIMSSession
-    		var session = context.httpSession.getAttribute("CIMSSession");
+    		// get CMISSession
+    		var session = context.httpSession.getAttribute("CMISSession");
     		
     		if (session == null) {
     			throw new Error("Session not found. Please connect first.");
@@ -35,7 +35,7 @@ comment: |
     	    var inputStream = contentStream.getStream();
     	
     		// Create temp file (prefix, suffix)
-    		var tempFile = File.createTempFile("C8oCIMS_", "_" + doc.getName());
+    		var tempFile = File.createTempFile("C8oCMIS_", "_" + doc.getName());
     		var fileOut = new FileOutputStream(tempFile);
     	
     	    // Buffer to read/write
@@ -87,7 +87,7 @@ comment: |
         - ↑mode: JS
         - →→: outputPath
 ↓docPath [variables.RequestableVariable-1744458011217]: 
-  comment: CIMS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
+  comment: CMIS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
 ↓TestKO [core.TestCase]: 
   ↓docPath [variables.TestCaseVariable-1744461263910]: 
     value: /MyFolder/FAKE.DOC

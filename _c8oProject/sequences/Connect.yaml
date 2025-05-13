@@ -1,6 +1,6 @@
 accessibility: Hidden
 comment: |
-  Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CIMS (Alfresco). The session will be automatically held in the Convertigo Session.
+  Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CMIS (Alfresco). The session will be automatically held in the Convertigo Session.
   
   Will return the list of folders  of the users root Directory with folder name and folder path.
   
@@ -36,7 +36,7 @@ comment: |
     	    session = repositories.get(0).createSession();
     		
     		// Store session in Convertigo session
-    		context.httpSession.setAttribute("CIMSSession", session);
+    		context.httpSession.setAttribute("CMISSession", session);
     			
     	    // Get root folder and print its name
     	    var root = session.getRootFolder();
@@ -87,16 +87,16 @@ comment: |
         - ↑mode: PLAIN
         - →→: folders
 ↓user [variables.RequestableVariable-1744453414709]: 
-  comment: User name to acess the CIMS
+  comment: User name to acess the CMIS
 ↓password [variables.RequestableVariable-1744453422589]: 
-  comment: Password to access the CIMS
+  comment: Password to access the CMIS
   value: 
     - ↑ciphered: true
     - ↑traceable: false
     - →→: xd8e180806a1c1d83a6255212121ab827
   visibility: '-1'
 ↓url [variables.RequestableVariable-1744453432764]: 
-  comment: Target CIMS URL, for example use http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom for Alfresco
+  comment: Target CMIS URL, for example use http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom for Alfresco
   value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
 ↓repoID [variables.RequestableVariable-1744453454027]: 
   comment: The repository ID to access. use '-default-' for Alfresco
