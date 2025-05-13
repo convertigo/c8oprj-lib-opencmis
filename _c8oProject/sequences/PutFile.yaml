@@ -1,6 +1,6 @@
 accessibility: Hidden
 comment: |
-  Puts a file in a CIMS repository. The Sequence will return the folder were the file has been placed.
+  Puts a file in a CMIS repository. The Sequence will return the folder were the file has been placed.
   
 ↓PutFile [steps.SimpleStep-1744461342356]: 
   expression: |
@@ -18,8 +18,8 @@ comment: |
     
     with (cmis) {
     	try {
-    		// get CIMSSession
-    		var session = context.httpSession.getAttribute("CIMSSession");
+    		// get CMISSession
+    		var session = context.httpSession.getAttribute("CMISSession");
             if (session == null) {
     			throw new Error("Session not found. Please connect first.");
     		}
@@ -102,9 +102,9 @@ comment: |
         - ↑mode: PLAIN
         - →→: result
 ↓folderPath [variables.RequestableVariable-1744461342371]: 
-  comment: Target path in the CIMS. for example '/MyFolder'
+  comment: Target path in the CMIS. for example '/MyFolder'
 ↓filePaths [variables.RequestableMultiValuedVariable-1744531147985]: 
-  comment: Full Paths of the files to upload to CIMS. 
+  comment: Full Paths of the files to upload to CMIS. 
   isFileUpload: true
 ↓TestOK [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1744461817295]: 
