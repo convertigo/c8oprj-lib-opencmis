@@ -24,7 +24,6 @@ comment: |
         // Set connection parameters
     	try {
     		var protocol = determineProtocol(bindingType);
-    		log.warn("protocol: ''" + protocol+"''");
     	    var parameters = new HashMap();
     	    
     	    parameters.put(SessionParameter.USER, user+ "");
@@ -80,6 +79,7 @@ comment: |
     	}
     }
     
+    // Determine the protocol based on bindingType and url if needed
     function determineProtocol(bindingType)
     {
     	if(bindingType == "auto")
