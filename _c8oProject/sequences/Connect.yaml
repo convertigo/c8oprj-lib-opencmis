@@ -29,6 +29,22 @@ comment: |
     	    parameters.put(SessionParameter.ATOMPUB_URL,  url +"");
     	    parameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
     	    parameters.put(SessionParameter.REPOSITORY_ID, repoID + "");
+    	    
+    	    if(session_parameters)
+    	    {
+    			session_parameters.forEach(param => {
+    				var splitParameter = param.split(";");
+    				if(splitParameter.length == 2)
+    				{
+    					parameters.put(splitParameter[0], splitParameter[1]);
+    				}
+    				else
+    				{
+    					log.warn("session parameters malformed: " + param);
+    				}
+    			});
+    		}
+    	    
     	
     	    // Create session factory and session
     	    var factory = SessionFactoryImpl.newInstance();
@@ -101,6 +117,12 @@ comment: |
 ↓repoID [variables.RequestableVariable-1744453454027]: 
   comment: The repository ID to access. use '-default-' for Alfresco
   value: '-default-'
+↓session_parameters [variables.RequestableMultiValuedVariable-1747125978351]: 
+  comment: 'The parameters added to the session creation. In the array, add a string formated like this : "key;value"'
+  value: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
 ↓TestKO [core.TestCase]: 
   ↓user [variables.TestCaseVariable-1744454283065]: 
     value: adminXX
@@ -127,3 +149,27 @@ comment: |
     value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
   ↓repoID [variables.TestCaseVariable-1744453637029]: 
     value: '-default-'
+↓TestOK_session_parameters [core.TestCase]: 
+  ↓user [variables.TestCaseVariable-1747126370334]: 
+    value: admin
+  ↓password [variables.TestCaseVariable-1747126370337]: 
+    value: 
+      - ↑ciphered: true
+      - ↑traceable: false
+      - →→: x144a9012e09548e8f0eb9a15054ed371
+    visibility: '-1'
+  ↓url [variables.TestCaseVariable-1747126370340]: 
+    value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
+  ↓repoID [variables.TestCaseVariable-1747126370343]: 
+    value: '-default-'
+  ↓session_parameters [variables.TestCaseMultiValuedVariable-1747126371827]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: key;value
+          - java.lang.String: 
+            - ↑value: test;things
+          - java.lang.String: 
+            - ↑value: malFormed
