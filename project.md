@@ -1,10 +1,9 @@
 
-# ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/core/images/project_color_16x16.png?raw=true "Project") lib_OpenCIMS
+# ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/core/images/project_color_16x16.png?raw=true "Project") lib_OpenCMIS
 
-# CIMS connector to Alfresco
+# CMIS connector to Alfresco
 
 This is the CIMS connector for Convertigo enabling to read, and put file in CIMS repositories sudh as Alfresco. The Connector relies on the Apache OpenCIMS library.
-
 
 
 <details><summary><span style="color:DarkGoldenRod"><i>Connectors</i></span></summary><blockquote><p>
@@ -31,7 +30,7 @@ does nothing
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") Connect
 
-Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CIMS (Alfresco). The session will be automatically held in the Convertigo Session.
+Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CMIS (Alfresco). The session will be automatically held in the Convertigo Session.
 
 Will return the list of folders  of the users root Directory with folder name and folder path.
 
@@ -50,10 +49,18 @@ comment
 </tr>
 <tr>
 <td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;bindingType
+</td>
+<td>
+Protocol used to communicate with a CMIS repository. By default, auto-detected with the url. Allowed values : AtomPub, Browser, auto.
+</td>
+</tr>
+<tr>
+<td>
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;password
 </td>
 <td>
-Password to access the CIMS
+Password to access the CMIS
 </td>
 </tr>
 <tr>
@@ -77,7 +84,7 @@ The parameters added to the session creation. In the array, add a string formate
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;url
 </td>
 <td>
-Target CIMS URL, for example use http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom for Alfresco
+Target CMIS URL, for example use http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom for Alfresco
 </td>
 </tr>
 <tr>
@@ -85,19 +92,19 @@ Target CIMS URL, for example use http://localhost:8080/alfresco/api/-default-/pu
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;user
 </td>
 <td>
-User name to acess the CIMS
+User name to acess the CMIS
 </td>
 </tr>
 </table>
 
 </p></blockquote></details>
 
-<details><summary><b>GetFile</b> : Gets a file from CIMS repository</summary><blockquote><p>
+<details><summary><b>GetFile</b> : Gets a file from CMIS repository</summary><blockquote><p>
 
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") GetFile
 
-Gets a file from CIMS repository. The file will be retrieved and saved in a temp directory. When you finish using this file  you should delete it. The sequence will return The full path of the output file.
+Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file  you should delete it. The sequence will return The full path of the output file.
 
 
 <span style="color:DarkGoldenRod">Variables</span>
@@ -116,19 +123,19 @@ comment
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;docPath
 </td>
 <td>
-CIMS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
+CMIS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
 </td>
 </tr>
 </table>
 
 </p></blockquote></details>
 
-<details><summary><b>PutFile</b> : Puts a file in a CIMS repository</summary><blockquote><p>
+<details><summary><b>PutFile</b> : Puts a file in a CMIS repository</summary><blockquote><p>
 
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") PutFile
 
-Puts a file in a CIMS repository. The Sequence will return the folder were the file has been placed.
+Puts a file in a CMIS repository. The Sequence will return the folder were the file has been placed.
 
 
 <span style="color:DarkGoldenRod">Variables</span>
@@ -147,7 +154,7 @@ comment
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/multivaluedvariable_color_16x16.png?raw=true "  alt="RequestableMultiValuedVariable" >&nbsp;filePaths
 </td>
 <td>
-Full Paths of the files to upload to CIMS. 
+Full Paths of the files to upload to CMIS. 
 </td>
 </tr>
 <tr>
@@ -155,7 +162,7 @@ Full Paths of the files to upload to CIMS.
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;folderPath
 </td>
 <td>
-Target path in the CIMS. for example '/MyFolder'
+Target path in the CMIS. for example '/MyFolder'
 </td>
 </tr>
 </table>

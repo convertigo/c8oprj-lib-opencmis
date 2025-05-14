@@ -1,6 +1,6 @@
 accessibility: Hidden
 comment: |
-  Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CIMS (Alfresco). The session will be automatically held in the Convertigo Session.
+  Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CMIS (Alfresco). The session will be automatically held in the Convertigo Session.
   
   Will return the list of folders  of the users root Directory with folder name and folder path.
   
@@ -23,11 +23,27 @@ comment: |
     with (cmis) {
         // Set connection parameters
     	try {
+    		var protocol = determineProtocol(bindingType);
     	    var parameters = new HashMap();
+    	    
     	    parameters.put(SessionParameter.USER, user+ "");
     	    parameters.put(SessionParameter.PASSWORD, password + "");
-    	    parameters.put(SessionParameter.ATOMPUB_URL,  url +"");
-    	    parameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
+    	    
+    	    switch(protocol)
+    	    {
+    			case "AtomPub":
+    				parameters.put(SessionParameter.ATOMPUB_URL,  url +"");
+    	    		parameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
+    				break;
+    			case "Browser":
+    				parameters.put(SessionParameter.BROWSER_URL,  url +"");
+    	    		parameters.put(SessionParameter.BINDING_TYPE, BindingType.BROWSER.value());
+    				break;
+    			default : 
+    				log.error("Binding type not handled : " + bindingType);
+    				break;
+    		}
+    	    
     	    parameters.put(SessionParameter.REPOSITORY_ID, repoID + "");
     	    
     	    if(session_parameters)
@@ -52,7 +68,7 @@ comment: |
     	    session = repositories.get(0).createSession();
     		
     		// Store session in Convertigo session
-    		context.httpSession.setAttribute("CIMSSession", session);
+    		context.httpSession.setAttribute("CMISSession", session);
     			
     	    // Get root folder and print its name
     	    var root = session.getRootFolder();
@@ -77,6 +93,23 @@ comment: |
     			log.error("Cause: " + e.cause.message);
     		}
     	}
+    }
+    
+    // Determine the protocol based on bindingType and url if needed
+    function determineProtocol(bindingType)
+    {
+    	if(bindingType == "auto")
+    	{
+    		switch(url.split(/\/+/).pop())
+    		{
+    			case "atom": 
+    				return "AtomPub"; 
+    			case "browser" : 
+    				return "Browser"; 
+    		}
+    	}
+    	
+    	return String(bindingType);
     }
     '
 ↓jIf [steps.IfStep-1744454246644]: 
@@ -103,16 +136,16 @@ comment: |
         - ↑mode: PLAIN
         - →→: folders
 ↓user [variables.RequestableVariable-1744453414709]: 
-  comment: User name to acess the CIMS
+  comment: User name to acess the CMIS
 ↓password [variables.RequestableVariable-1744453422589]: 
-  comment: Password to access the CIMS
+  comment: Password to access the CMIS
   value: 
     - ↑ciphered: true
     - ↑traceable: false
     - →→: xd8e180806a1c1d83a6255212121ab827
   visibility: '-1'
 ↓url [variables.RequestableVariable-1744453432764]: 
-  comment: Target CIMS URL, for example use http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom for Alfresco
+  comment: Target CMIS URL, for example use http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom for Alfresco
   value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
 ↓repoID [variables.RequestableVariable-1744453454027]: 
   comment: The repository ID to access. use '-default-' for Alfresco
@@ -123,6 +156,9 @@ comment: |
     - xmlizable: 
       - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
       - com.twinsoft.convertigo.beans.common.XMLVector: 
+↓bindingType [variables.RequestableVariable-1747123228680]: 
+  comment: 'Protocol used to communicate with a CMIS repository. By default, auto-detected with the url. Allowed values : AtomPub, Browser, auto.'
+  value: auto
 ↓TestKO [core.TestCase]: 
   ↓user [variables.TestCaseVariable-1744454283065]: 
     value: adminXX
@@ -136,7 +172,35 @@ comment: |
     value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
   ↓repoID [variables.TestCaseVariable-1744454283074]: 
     value: '-default-'
-↓TestOK [core.TestCase]: 
+↓TestKO_auto [core.TestCase]: 
+  ↓user [variables.TestCaseVariable-1747125445982]: 
+    value: adminXX
+  ↓password [variables.TestCaseVariable-1747125445985]: 
+    value: 
+      - ↑ciphered: true
+      - ↑traceable: false
+      - →→: x144a9012e09548e8f0eb9a15054ed371
+    visibility: '-1'
+  ↓url [variables.TestCaseVariable-1747125445988]: 
+    value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/ohmymy
+  ↓repoID [variables.TestCaseVariable-1747125445991]: 
+    value: '-default-'
+↓TestKO_binding_unknown [core.TestCase]: 
+  ↓user [variables.TestCaseVariable-1747124539837]: 
+    value: adminXX
+  ↓password [variables.TestCaseVariable-1747124539840]: 
+    value: 
+      - ↑ciphered: true
+      - ↑traceable: false
+      - →→: x144a9012e09548e8f0eb9a15054ed371
+    visibility: '-1'
+  ↓url [variables.TestCaseVariable-1747124539843]: 
+    value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
+  ↓repoID [variables.TestCaseVariable-1747124539846]: 
+    value: '-default-'
+  ↓bindingType [variables.TestCaseVariable-1747124559029]: 
+    value: theAmazingBindingType
+↓TestOK_auto_atom [core.TestCase]: 
   ↓user [variables.TestCaseVariable-1744453545516]: 
     value: admin
   ↓password [variables.TestCaseVariable-1744453545518]: 
@@ -153,6 +217,10 @@ comment: |
   ↓user [variables.TestCaseVariable-1747126370334]: 
     value: admin
   ↓password [variables.TestCaseVariable-1747126370337]: 
+↓TestOK_auto_browser [core.TestCase]: 
+  ↓user [variables.TestCaseVariable-1747125412945]: 
+    value: admin
+  ↓password [variables.TestCaseVariable-1747125412948]: 
     value: 
       - ↑ciphered: true
       - ↑traceable: false
@@ -162,6 +230,40 @@ comment: |
     value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
   ↓repoID [variables.TestCaseVariable-1747126370343]: 
     value: '-default-'
+  ↓url [variables.TestCaseVariable-1747125412951]: 
+    value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/browser
+  ↓repoID [variables.TestCaseVariable-1747125412954]: 
+    value: '-default-'
+↓TestOK_binding_atom [core.TestCase]: 
+  ↓user [variables.TestCaseVariable-1747124413678]: 
+    value: admin
+  ↓password [variables.TestCaseVariable-1747124413681]: 
+    value: 
+      - ↑ciphered: true
+      - ↑traceable: false
+      - →→: x144a9012e09548e8f0eb9a15054ed371
+    visibility: '-1'
+  ↓url [variables.TestCaseVariable-1747124413684]: 
+    value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
+  ↓repoID [variables.TestCaseVariable-1747124413687]: 
+    value: '-default-'
+  ↓bindingType [variables.TestCaseVariable-1747124477790]: 
+    value: AtomPub
+↓TestOK_binding_browser [core.TestCase]: 
+  ↓user [variables.TestCaseVariable-1747124416317]: 
+    value: admin
+  ↓password [variables.TestCaseVariable-1747124416320]: 
+    value: 
+      - ↑ciphered: true
+      - ↑traceable: false
+      - →→: x144a9012e09548e8f0eb9a15054ed371
+    visibility: '-1'
+  ↓url [variables.TestCaseVariable-1747124416323]: 
+    value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
+  ↓repoID [variables.TestCaseVariable-1747124416326]: 
+    value: '-default-'
+  ↓bindingType [variables.TestCaseVariable-1747124480750]: 
+    value: SOAP
   ↓session_parameters [variables.TestCaseMultiValuedVariable-1747126371827]: 
     value: 
       - xmlizable: 
