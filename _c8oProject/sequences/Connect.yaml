@@ -16,9 +16,9 @@ comment: |
         java.util
     );
     
-    var error = null
-    var folders = []
-    var session = null
+    var error = null;
+    var folders = [];
+    var session = null;
     
     with (cmis) {
         // Set connection parameters
@@ -26,17 +26,17 @@ comment: |
     		var protocol = determineProtocol(bindingType);
     	    var parameters = new HashMap();
     	    
-    	    parameters.put(SessionParameter.USER, user+ "");
+    	    parameters.put(SessionParameter.USER, user + "");
     	    parameters.put(SessionParameter.PASSWORD, password + "");
     	    
     	    switch(protocol)
     	    {
     			case "AtomPub":
-    				parameters.put(SessionParameter.ATOMPUB_URL,  url +"");
+    				parameters.put(SessionParameter.ATOMPUB_URL,  url + "");
     	    		parameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
     				break;
     			case "Browser":
-    				parameters.put(SessionParameter.BROWSER_URL,  url +"");
+    				parameters.put(SessionParameter.BROWSER_URL,  url + "");
     	    		parameters.put(SessionParameter.BINDING_TYPE, BindingType.BROWSER.value());
     				break;
     			default : 
@@ -72,7 +72,7 @@ comment: |
     			
     	    // Get root folder and print its name
     	    var root = session.getRootFolder();
-    	    log.warn("Root folder: " + root.getName());
+    	    log.debug("Root folder: " + root.getName());
     	
     	    // List children of the root folder
     	    var children = root.getChildren();
@@ -82,8 +82,9 @@ comment: |
     			folders.push({
     				name: child.getName(),
     				path: child.getPaths().get(0),
+    				id	: child.getId()
     			});
-    	        log.warn(" - " + child.getName() + " (" + child.getType().getDisplayName() + ")");
+    	        log.debug(" - " + child.getName() + " (" + child.getType().getDisplayName() + ")");
     	    }
     	} catch (e) {
     		// Handle exceptions
@@ -213,10 +214,6 @@ comment: |
     value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
   ↓repoID [variables.TestCaseVariable-1744453637029]: 
     value: '-default-'
-↓TestOK_session_parameters [core.TestCase]: 
-  ↓user [variables.TestCaseVariable-1747126370334]: 
-    value: admin
-  ↓password [variables.TestCaseVariable-1747126370337]: 
 ↓TestOK_auto_browser [core.TestCase]: 
   ↓user [variables.TestCaseVariable-1747125412945]: 
     value: admin
@@ -230,9 +227,9 @@ comment: |
     value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom
   ↓repoID [variables.TestCaseVariable-1747126370343]: 
     value: '-default-'
-  ↓url [variables.TestCaseVariable-1747125412951]: 
+  ↓url1 [variables.TestCaseVariable-1747125412951]: 
     value: http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/browser
-  ↓repoID [variables.TestCaseVariable-1747125412954]: 
+  ↓repoID1 [variables.TestCaseVariable-1747125412954]: 
     value: '-default-'
 ↓TestOK_binding_atom [core.TestCase]: 
   ↓user [variables.TestCaseVariable-1747124413678]: 
@@ -275,3 +272,7 @@ comment: |
             - ↑value: test;things
           - java.lang.String: 
             - ↑value: malFormed
+↓TestOK_session_parameters [core.TestCase]: 
+  ↓user [variables.TestCaseVariable-1747126370334]: 
+    value: admin
+  ↓password [variables.TestCaseVariable-1747126370337]: 

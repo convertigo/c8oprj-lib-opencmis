@@ -1,0 +1,60 @@
+↓Get_from_session [steps.SessionGetStep-1749040633508]: 
+  key: CMISSession
+  output: false
+↓IfExpressionExists [steps.IfExistThenElseStep-1749040999902]: 
+  condition: IfExpressionExists
+  sourceDefinition: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
+        - java.lang.String: 
+          - ↑value: 1749040633508
+        - java.lang.String: 
+          - ↑value: ./expression/text()
+  ↓jThen [steps.ThenStep-1749040726905]: 
+    ↓isConnected [steps.JsonFieldStep-1749040845586]: 
+      key: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: PLAIN
+            - →→: isConnected
+      type: bool
+      value: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: PLAIN
+            - →→: true
+    ↓session [steps.JsonFieldStep-1749041134262]: 
+      key: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: PLAIN
+            - →→: session
+      value: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: SOURCE
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: 1749040633508
+              - java.lang.String: 
+                - ↑value: ./expression/text()
+  ↓jElse [steps.ElseStep-1749040726907]: 
+    ↓isConnected [steps.JsonFieldStep-1749040863955]: 
+      key: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: PLAIN
+            - →→: isConnected
+      type: bool
+      value: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: PLAIN
+            - →→: false

@@ -1,0 +1,104 @@
+accessibility: Hidden
+comment: Get Personal Files folders from root folder
+↓Call_Sequence [steps.SequenceStep-1749041489489]: 
+  sourceSequence: lib_OpenCMIS.CheckConnect
+↓IfIsInThenElse [steps.IsInStep-1749041580378]: 
+  condition: IfIsInThenElse
+  sourceDefinition: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
+        - java.lang.String: 
+          - ↑value: 1749041489489
+        - java.lang.String: 
+          - ↑value: ./document/isConnected/text()
+  testDefinition: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+      - com.twinsoft.convertigo.beans.common.XMLVector: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: NOT
+            - java.lang.String: 
+              - ↑value: true
+  ↓Error_structure [steps.XMLErrorStep-1749041595356]: 
+    message: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: PLAIN
+          - →→: Session expired. Please reconnect.
+  ↓Return [steps.ReturnStep-1749041595359]: 
+↓getFolders [steps.SimpleStep-1749041648203]: 
+  expression: |
+    '// Import required Java classes using JavaImporter
+    var cmis = new JavaImporter(
+        org.apache.chemistry.opencmis.client.api,
+        org.apache.chemistry.opencmis.client.runtime,
+        org.apache.chemistry.opencmis.commons.enums,
+        org.apache.chemistry.opencmis.commons,
+        java.util
+    );
+    
+    var error = null;
+    var folders = {};
+    var children_folders = [];
+    var session = null;
+    
+    with (cmis) {
+    	try {
+    		// get CMISSession
+    		var session = context.httpSession.getAttribute("CMISSession");
+    			
+    	    // Get root folder and print its name
+    	    var root = session.getRootFolder();
+    	    log.debug("Root folder: " + root.getName());
+    	    folders["root_folder"] = root.getName();
+    	    folders["children"] = [];
+    	
+    	    // List children of the root folder
+    	    var children = root.getChildren();
+    	    var it = children.iterator();
+    	    while (it.hasNext()) {
+    	        var child = it.next();
+    			folders["children"].push({
+    				name: child.getName(),
+    				path: child.getPaths().get(0),
+    				id:	  child.getId()
+    			});
+    	        log.debug(" - " + child.getName() + " (" + child.getType().getDisplayName() + ")");
+    	    }
+    	} catch (e) {
+    		// Handle exceptions
+    		log.error("Error: " + e.message);
+    		error = e.message;
+    		if (e.cause) {
+    			log.error("Cause: " + e.cause.message);
+    		}
+    	}
+    }'
+↓jIf [steps.IfStep-1749042289280]: 
+  condition: error != null
+  ↓Error_structure [steps.XMLErrorStep-1749042289283]: 
+    message: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: JS
+          - →→: error
+  ↓Return [steps.ReturnStep-1749042289286]: 
+↓object [steps.JsonToXmlStep-1749041993329]: 
+  jsonObject: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: JS
+        - →→: folders
+  key: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: PLAIN
+        - →→: folders

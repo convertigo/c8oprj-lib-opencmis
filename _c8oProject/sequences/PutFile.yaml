@@ -23,15 +23,15 @@ comment: |
             if (session == null) {
     			throw new Error("Session not found. Please connect first.");
     		}
-    	    var folder = session.getObjectByPath(folderPath);
+    	    var folder = (folderID != null && folderID != "") ? session.getObject(session.createObjectId(folderID)) : session.getObjectByPath(folderPath);
     	    log.debug("Uploading to: " + folder.getPaths().toArray()[0]);
     	
     		// for each filePaths[] loop and upload
     		for (var i = 0; i < filePaths.length; i++) {	
     		    // Local file to upload
-    		    var file = new File(filePaths[i]);
+    		    var file = new File(get_full_path(filePaths[i]));
     		
-    		    var fileName = file.getName();
+    		    var fileName = (fileNames != null && fileNames[i] != "") ? fileNames[i] : file.getName();
     		    var fileInputStream = new FileInputStream(file);
     		    var fileLength = file.length();
     		
@@ -62,6 +62,11 @@ comment: |
     			
     			res.push({
     				"filePath": newDoc.getPaths().toArray()[0],
+    				"id": newDoc.getId(),
+    				"name": newDoc.getName(),
+    				"creator": newDoc.getCreatedBy(),
+    				"creationDate": formatReadableDate(newDoc.getCreationDate()),
+    				"fileSize": newDoc.getContentStreamLength(),
     				"mimeType": mimeType
     			});
     		    // Clean up
@@ -77,7 +82,29 @@ comment: |
     		}
     	}
     }
-    '
+    
+    function get_full_path(file_path){
+    	if(file_path != ""){
+    		project_directory_path = context.getProjectDirectory().replace("\\", "/") + "/";
+     		if(file_path.indexOf(".//") != -1){
+      			file_path = project_directory_path + file_path.substring(3);
+    		}
+     		else if(file_path.indexOf("./") != -1){
+      			file_path = project_directory_path + "../" + file_path.substring(3);
+    		}
+    	}
+    	return file_path;
+    }
+    
+    // Fonction utilitaire pour formater une date lisible
+    function formatReadableDate(calendar) {
+        if (calendar == null || calendar == "null") {
+            return null; // Pas de date
+        }
+        var formatter = new java.text.SimpleDateFormat("yyyy-MM-dd''T''HH:mm:ss''Z''");
+        formatter.setTimeZone(java.util.TimeZone.getTimeZone("UTC")); // Assure un format en UTC
+        return formatter.format(calendar.getTime());
+    }'
 ↓jIf [steps.IfStep-1744461342359]: 
   condition: error != null
   ↓Error_structure [steps.XMLErrorStep-1744461342362]: 
@@ -103,16 +130,46 @@ comment: |
         - →→: result
 ↓folderPath [variables.RequestableVariable-1744461342371]: 
   comment: Target path in the CMIS. for example '/MyFolder'
+↓folderID [variables.RequestableVariable-1749050135618]: 
+  comment: Target path in the CMIS. for example '/MyFolder'
 ↓filePaths [variables.RequestableMultiValuedVariable-1744531147985]: 
+  comment: Full Paths of the files to upload to CMIS. 
+  isFileUpload: true
+↓fileNames [variables.RequestableMultiValuedVariable-1749042782705]: 
   comment: Full Paths of the files to upload to CMIS. 
   isFileUpload: true
 ↓TestOK [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1744461817295]: 
-    value: /MyFolder
+    value: /Shared
   ↓filePaths [variables.TestCaseMultiValuedVariable-1744532244203]: 
     value: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
         - com.twinsoft.convertigo.beans.common.XMLVector: 
           - java.lang.String: 
-            - ↑value: C:\Users\opic_000\Downloads\helm-v3.17.0-linux-amd64.tar.gz
+            - ↑value: .//sample_upload_file.pdf
+  ↓fileNames [variables.TestCaseMultiValuedVariable-1749044164757]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: myFile.pdf
+↓TestOK_folderID [core.TestCase]: 
+  ↓folderPath [variables.TestCaseVariable-1749052525226]: 
+  ↓filePaths [variables.TestCaseMultiValuedVariable-1749052525229]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: .//sample_upload_file.pdf
+  ↓fileNames [variables.TestCaseMultiValuedVariable-1749052525232]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: myFile.pdf
+  ↓folderID [variables.TestCaseVariable-1749052537222]: 
+    value: 16cfc56d-eb6c-4420-8fc5-6deb6c0420c5

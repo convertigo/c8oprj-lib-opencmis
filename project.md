@@ -3,7 +3,7 @@
 
 # CMIS connector to Alfresco
 
-This is the CIMS connector for Convertigo enabling to read, and put file in CIMS repositories sudh as Alfresco. The Connector relies on the Apache OpenCIMS library.
+This is the CMIS connector for Convertigo enabling to read, and put file in CMIS repositories such as Alfresco. The Connector relies on the Apache OpenCMIS library.
 
 
 <details><summary><span style="color:DarkGoldenRod"><i>Connectors</i></span></summary><blockquote><p>
@@ -24,6 +24,14 @@ does nothing
 
 <details><summary><span style="color:DarkGoldenRod"><i>Sequences</i></span></summary><blockquote><p>
 
+
+<details><summary><b>CheckConnect</b></summary><blockquote><p>
+
+
+## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") CheckConnect
+
+
+</p></blockquote></details>
 
 <details><summary><b>Connect</b> : Has to be called before any other Sequence</summary><blockquote><p>
 
@@ -130,6 +138,14 @@ CMIS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
 
 </p></blockquote></details>
 
+<details><summary><b>PersonalFiles</b> : Get Personal Files folders from root folder</summary><blockquote><p>
+
+
+## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") PersonalFiles
+
+Get Personal Files folders from root folder
+</p></blockquote></details>
+
 <details><summary><b>PutFile</b> : Puts a file in a CMIS repository</summary><blockquote><p>
 
 
@@ -151,10 +167,26 @@ comment
 </tr>
 <tr>
 <td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/multivaluedvariable_color_16x16.png?raw=true "  alt="RequestableMultiValuedVariable" >&nbsp;fileNames
+</td>
+<td>
+Full Paths of the files to upload to CMIS. 
+</td>
+</tr>
+<tr>
+<td>
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/multivaluedvariable_color_16x16.png?raw=true "  alt="RequestableMultiValuedVariable" >&nbsp;filePaths
 </td>
 <td>
 Full Paths of the files to upload to CMIS. 
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;folderID
+</td>
+<td>
+Target path in the CMIS. for example '/MyFolder'
 </td>
 </tr>
 <tr>
