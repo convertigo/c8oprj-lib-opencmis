@@ -25,12 +25,14 @@ does nothing
 <details><summary><span style="color:DarkGoldenRod"><i>Sequences</i></span></summary><blockquote><p>
 
 
-<details><summary><b>CheckConnect</b></summary><blockquote><p>
+<details><summary><b>CheckConnect</b> : Check if the CMIS session is still alive</summary><blockquote><p>
 
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") CheckConnect
 
+Check if the CMIS session is still alive.
 
+Will return isConnected true/false and the session name if available.
 </p></blockquote></details>
 
 <details><summary><b>Connect</b> : Has to be called before any other Sequence</summary><blockquote><p>
@@ -40,7 +42,7 @@ does nothing
 
 Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CMIS (Alfresco). The session will be automatically held in the Convertigo Session.
 
-Will return the list of folders  of the users root Directory with folder name and folder path.
+Will return the list of folders of the users root Directory with folder name, id and folder path.
 
 
 
@@ -112,7 +114,7 @@ User name to acess the CMIS
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") GetFile
 
-Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file  you should delete it. The sequence will return The full path of the output file.
+Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file you should delete it. The sequence will return the full path of the output file.
 
 
 <span style="color:DarkGoldenRod">Variables</span>
@@ -138,12 +140,12 @@ CMIS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
 
 </p></blockquote></details>
 
-<details><summary><b>PersonalFiles</b> : Get Personal Files folders from root folder</summary><blockquote><p>
+<details><summary><b>PersonalFiles</b> : Get user Personal Files folders from root folder</summary><blockquote><p>
 
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") PersonalFiles
 
-Get Personal Files folders from root folder
+Get user Personal Files folders from root folder.
 </p></blockquote></details>
 
 <details><summary><b>PutFile</b> : Puts a file in a CMIS repository</summary><blockquote><p>
@@ -151,7 +153,7 @@ Get Personal Files folders from root folder
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") PutFile
 
-Puts a file in a CMIS repository. The Sequence will return the folder were the file has been placed.
+Puts a file in a CMIS repository. The Sequence will return the folder where the file has been placed.
 
 
 <span style="color:DarkGoldenRod">Variables</span>

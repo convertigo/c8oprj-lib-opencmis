@@ -1,5 +1,5 @@
 accessibility: Hidden
-comment: Get Personal Files folders from root folder
+comment: Get user Personal Files folders from root folder.
 ↓Call_Sequence [steps.SequenceStep-1749041489489]: 
   sourceSequence: lib_OpenCMIS.CheckConnect
 ↓IfIsInThenElse [steps.IsInStep-1749041580378]: 

@@ -1,6 +1,6 @@
 accessibility: Hidden
 comment: |
-  Puts a file in a CMIS repository. The Sequence will return the folder were the file has been placed.
+  Puts a file in a CMIS repository. The Sequence will return the folder where the file has been placed.
   
 ↓PutFile [steps.SimpleStep-1744461342356]: 
   expression: |

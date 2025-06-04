@@ -5,7 +5,7 @@
 
 # CMIS connector to Alfresco
 
-This is the CIMS connector for Convertigo enabling to read, and put file in CIMS repositories sudh as Alfresco. The Connector relies on the Apache OpenCIMS library.
+This is the CMIS connector for Convertigo enabling to read, and put file in CMIS repositories such as Alfresco. The Connector relies on the Apache OpenCMIS library.
 
 
 
@@ -13,8 +13,10 @@ For more technical informations : [documentation](./project.md)
 
 - [Installation](#installation)
 - [Sequences](#sequences)
+    - [CheckConnect](#checkconnect)
     - [Connect](#connect)
     - [GetFile](#getfile)
+    - [PersonalFiles](#personalfiles)
     - [PutFile](#putfile)
 
 
@@ -31,13 +33,13 @@ For more technical informations : [documentation](./project.md)
      <tr><td>To contribute</td><td>
 
      ```
-     lib_OpenCMIS=https://github.com/convertigo/c8oprj-lib-opencims.git:branch=master
+     lib_OpenCMIS=https://github.com/convertigo/c8oprj-lib-opencmis.git:branch=master
      ```
      </td></tr>
      <tr><td>To simply use</td><td>
 
      ```
-     lib_OpenCMIS=https://github.com/convertigo/c8oprj-lib-opencims/archive/master.zip
+     lib_OpenCMIS=https://github.com/convertigo/c8oprj-lib-opencmis/archive/master.zip
      ```
      </td></tr>
     </table>
@@ -46,11 +48,17 @@ For more technical informations : [documentation](./project.md)
 
 ## Sequences
 
+### CheckConnect
+
+Check if the CMIS session is still alive.
+
+Will return isConnected true/false and the session name if available.
+
 ### Connect
 
 Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CMIS (Alfresco). The session will be automatically held in the Convertigo Session.
 
-Will return the list of folders  of the users root Directory with folder name and folder path.
+Will return the list of folders of the users root Directory with folder name, id and folder path.
 
 
 
@@ -70,6 +78,9 @@ Will return the list of folders  of the users root Directory with folder name an
 <td>repoID</td><td>The repository ID to access. use '-default-' for Alfresco</td>
 </tr>
 <tr>
+<td>session_parameters</td><td>The parameters added to the session creation. In the array, add a string formated like this : "key;value"</td>
+</tr>
+<tr>
 <td>url</td><td>Target CMIS URL, for example use http://localhost:8080/alfresco/api/-default-/public/cmis/versions/1.1/atom for Alfresco</td>
 </tr>
 <tr>
@@ -79,7 +90,7 @@ Will return the list of folders  of the users root Directory with folder name an
 
 ### GetFile
 
-Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file  you should delete it. The sequence will return The full path of the output file.
+Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file you should delete it. The sequence will return the full path of the output file.
 
 
 **variables**
@@ -93,9 +104,13 @@ Gets a file from CMIS repository. The file will be retrieved and saved in a temp
 </tr>
 </table>
 
+### PersonalFiles
+
+Get user Personal Files folders from root folder.
+
 ### PutFile
 
-Puts a file in a CMIS repository. The Sequence will return the folder were the file has been placed.
+Puts a file in a CMIS repository. The Sequence will return the folder where the file has been placed.
 
 
 **variables**
@@ -105,7 +120,13 @@ Puts a file in a CMIS repository. The Sequence will return the folder were the f
 <th>name</th><th>comment</th>
 </tr>
 <tr>
+<td>fileNames</td><td>Full Paths of the files to upload to CMIS. </td>
+</tr>
+<tr>
 <td>filePaths</td><td>Full Paths of the files to upload to CMIS. </td>
+</tr>
+<tr>
+<td>folderID</td><td>Target path in the CMIS. for example '/MyFolder'</td>
 </tr>
 <tr>
 <td>folderPath</td><td>Target path in the CMIS. for example '/MyFolder'</td>

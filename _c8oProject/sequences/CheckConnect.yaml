@@ -1,3 +1,7 @@
+comment: |
+  Check if the CMIS session is still alive.
+  
+  Will return isConnected true/false and the session name if available.
 ↓Get_from_session [steps.SessionGetStep-1749040633508]: 
   key: CMISSession
   output: false
