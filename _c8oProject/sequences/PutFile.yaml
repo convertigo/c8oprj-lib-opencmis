@@ -129,14 +129,14 @@ comment: |
         - ↑mode: PLAIN
         - →→: result
 ↓folderPath [variables.RequestableVariable-1744461342371]: 
-  comment: Target path in the CMIS. for example '/MyFolder'
+  comment: Target path in the CMIS. For example '/MyFolder'
 ↓folderID [variables.RequestableVariable-1749050135618]: 
-  comment: Target path in the CMIS. for example '/MyFolder'
+  comment: Target ID in the CMIS. For example '16cfc56d-eb6c-4420-8fc5-6deb6c0420c5'
 ↓filePaths [variables.RequestableMultiValuedVariable-1744531147985]: 
   comment: Full Paths of the files to upload to CMIS. 
   isFileUpload: true
 ↓fileNames [variables.RequestableMultiValuedVariable-1749042782705]: 
-  comment: Full Paths of the files to upload to CMIS. 
+  comment: File names of the files to upload to CMIS. If none is provided, it will use the default file names from filePaths variable.
   isFileUpload: true
 ↓TestOK [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1744461817295]: 

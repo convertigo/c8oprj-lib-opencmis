@@ -172,7 +172,7 @@ comment
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/multivaluedvariable_color_16x16.png?raw=true "  alt="RequestableMultiValuedVariable" >&nbsp;fileNames
 </td>
 <td>
-Full Paths of the files to upload to CMIS. 
+File names of the files to upload to CMIS. If none is provided, it will use the default file names from filePaths variable.
 </td>
 </tr>
 <tr>
@@ -188,7 +188,7 @@ Full Paths of the files to upload to CMIS.
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;folderID
 </td>
 <td>
-Target path in the CMIS. for example '/MyFolder'
+Target ID in the CMIS. For example '16cfc56d-eb6c-4420-8fc5-6deb6c0420c5'
 </td>
 </tr>
 <tr>
@@ -196,7 +196,7 @@ Target path in the CMIS. for example '/MyFolder'
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;folderPath
 </td>
 <td>
-Target path in the CMIS. for example '/MyFolder'
+Target path in the CMIS. For example '/MyFolder'
 </td>
 </tr>
 </table>

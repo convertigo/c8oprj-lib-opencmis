@@ -120,16 +120,16 @@ Puts a file in a CMIS repository. The Sequence will return the folder where the 
 <th>name</th><th>comment</th>
 </tr>
 <tr>
-<td>fileNames</td><td>Full Paths of the files to upload to CMIS. </td>
+<td>fileNames</td><td>File names of the files to upload to CMIS. If none is provided, it will use the default file names from filePaths variable.</td>
 </tr>
 <tr>
 <td>filePaths</td><td>Full Paths of the files to upload to CMIS. </td>
 </tr>
 <tr>
-<td>folderID</td><td>Target path in the CMIS. for example '/MyFolder'</td>
+<td>folderID</td><td>Target ID in the CMIS. For example '16cfc56d-eb6c-4420-8fc5-6deb6c0420c5'</td>
 </tr>
 <tr>
-<td>folderPath</td><td>Target path in the CMIS. for example '/MyFolder'</td>
+<td>folderPath</td><td>Target path in the CMIS. For example '/MyFolder'</td>
 </tr>
 </table>
 
