@@ -1,7 +1,34 @@
 accessibility: Hidden
 comment: |
+  '<pre>
   Puts a file in a CMIS repository. The Sequence will return the folder where the file has been placed.
   
+  Use folderPath variable to put a document in a folder by its Path.
+  Or
+  Use folderID variable to put a document in a folder by its Id.
+  Do not fill both variables or you will have an error.
+  
+  Set one or multiple values for the filePaths variable to upload one or multiple documents.
+  If you set the fileNames values for each document, this will change the default file names from the filePaths variable.
+  
+  You can add document properties using the properties variable.
+  </pre>
+  
+  ### Output
+  ```
+  {
+    "result": [{
+      "filePath": "/Shared/myFile.pdf",
+      "id": "1e1d7d10-a8cd-4e8f-9d7d-10a8cd2e8f10;1.0",
+      "name": "myFile.pdf",
+      "creator": "admin",
+      "creationDate": "2025-06-06T15:37:05Z",
+      "fileSize": 19475,
+      "mimeType": "application/pdf"
+    }, ...]
+  }
+  ```
+  '
 ↓PutFile [steps.SimpleStep-1744461342356]: 
   expression: |
     'var cmis = new JavaImporter(
@@ -22,6 +49,9 @@ comment: |
     		var session = context.httpSession.getAttribute("CMISSession");
             if (session == null) {
     			throw new Error("Session not found. Please connect first.");
+    		}
+    		if(folderID != null && folderID != "" && folderPath != null && folderPath != ""){
+    			throw new Error("You must set folderID or folderPath value. Not both!");
     		}
     	    var folder = (folderID != null && folderID != "") ? session.getObject(session.createObjectId(folderID)) : session.getObjectByPath(folderPath);
     	    log.debug("Uploading to: " + folder.getPaths().toArray()[0]);
@@ -158,13 +188,13 @@ comment: |
   comment: Full Paths of the files to upload to CMIS. 
   isFileUpload: true
 ↓fileNames [variables.RequestableMultiValuedVariable-1749042782705]: 
-  comment: File names of the files to upload to CMIS. If none is provided, it will use the default file names from filePaths variable.
+  comment: (Optional) File names of the files to upload to CMIS. If none is provided, it will use the default file names from filePaths variable.
   isFileUpload: true
 ↓properties [variables.RequestableMultiValuedVariable-1749125916199]: 
   comment: |
-    'Properties list for the files. Each entry is a JSON object with the properties to set for the file.
+    '<pre>
+    (Optional) Properties list for the files. Each entry is a JSON object with the properties to set for the file.
     
-    <pre>
     {
     	name: property_name,
     	value: property_value

@@ -1,10 +1,29 @@
 accessibility: Hidden
 comment: |
+  '<pre>
   Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CMIS (Alfresco). The session will be automatically held in the Convertigo Session.
   
   Will return the list of folders of the users root Directory with folder name, id and folder path.
+  </pre>
   
-  
+  ### Output
+  ```
+  {
+    "folders": [
+      {
+        "name": "Shared",
+        "path": "/Shared",
+        "id": "16cfc56d-eb6c-4420-8fc5-6deb6c0420c5"
+      },
+      {
+        "name": "Imap Attachments",
+        "path": "/Imap Attachments",
+        "id": "78f06647-0b12-4dea-b066-470b12bdeae5"
+      },
+      ...
+    ]
+  }
+  ```'
 ↓Connect [steps.SimpleStep-1744444877776]: 
   expression: |
     '// Import required Java classes using JavaImporter

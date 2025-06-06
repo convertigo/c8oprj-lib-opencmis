@@ -1,7 +1,27 @@
 comment: |
+  '<pre>
   Check if the CMIS session is still alive.
   
   Will return isConnected true/false and the session name if available.
+  </pre>
+  
+  ### Output
+  
+  ```
+  {
+    "result": {
+      "isConnected": true,
+      "session": "Session 9b6cc4b7-5b83-43f0-a2ad-d5d1939a378b",
+      "name": "",
+      "id": "-default-",
+      "description": "",
+      "version": "1.1",
+      "vendor": "Alfresco",
+      "product": "Alfresco Community",
+      "root": "4d92ecbb-c391-452a-92ec-bbc391852a98"
+    }
+  }
+  ```'
 ↓Get_from_session [steps.SessionGetStep-1749040633508]: 
   key: CMISSession
   output: false
@@ -16,49 +36,90 @@ comment: |
         - java.lang.String: 
           - ↑value: ./expression/text()
   ↓jThen [steps.ThenStep-1749040726905]: 
-    ↓isConnected [steps.JsonFieldStep-1749040845586]: 
+    ↓cmis_repositoryInfo [steps.SimpleStep-1749224967386]: 
+      expression: |
+        'var cmis = new JavaImporter(
+            org.apache.chemistry.opencmis.client.api,
+            org.apache.chemistry.opencmis.client.runtime,
+            org.apache.chemistry.opencmis.commons.enums,
+            org.apache.chemistry.opencmis.commons,
+            java.util,
+            java.io
+        );
+        
+        var error = null;
+        var res = {};
+        
+        with (cmis) {
+        	try {
+        		// get CMISSession
+        		var session = context.httpSession.getAttribute("CMISSession");
+                if (session == null) {
+        			throw new Error("Session not found. Please connect first.");
+        		}
+        		info = session.getRepositoryInfo();
+        		
+        	    var query = "SELECT cmis:objectId FROM cmis:document WHERE cmis:name IS NOT NULL";
+        	    var results = session.query(query, false);
+        	    var next_result = results.iterator().hasNext();
+        	    
+        	    res = {
+        			"isConnected": true,
+        			"session": session,
+        			"name": info.getName(),
+        			"id": info.getId(),
+        			"description": info.getDescription(),
+        			"version": info.getCmisVersionSupported(),
+        			"vendor": info.getVendorName(),
+        			"product": info.getProductName(),
+        			"root": info.getRootFolderId()
+        		}
+        	} catch (e) {
+        		// Handle exceptions
+        		error = e.message;
+        		if (e.cause) {
+        			log.error("Cause: " + e.cause.message);
+        		}
+        	}
+        }'
+    ↓jIf [steps.IfStep-1749227120675]: 
+      condition: error != null
+      ↓compute_res__object [steps.SimpleStep-1749228205881]: 
+        expression: |
+          'var res = {
+          	"isConnected": false,
+          	"reason": error
+          	}'
+    ↓object [steps.JsonToXmlStep-1749227201079]: 
+      jsonObject: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: JS
+            - →→: res
       key: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
           - SmartType: 
             - ↑mode: PLAIN
-            - →→: isConnected
-      type: bool
-      value: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
-          - SmartType: 
-            - ↑mode: PLAIN
-            - →→: true
-    ↓session [steps.JsonFieldStep-1749041134262]: 
-      key: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
-          - SmartType: 
-            - ↑mode: PLAIN
-            - →→: session
-      value: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
-          - SmartType: 
-            - ↑mode: SOURCE
-            - com.twinsoft.convertigo.beans.common.XMLVector: 
-              - java.lang.String: 
-                - ↑value: 1749040633508
-              - java.lang.String: 
-                - ↑value: ./expression/text()
+            - →→: result
   ↓jElse [steps.ElseStep-1749040726907]: 
-    ↓isConnected [steps.JsonFieldStep-1749040863955]: 
+    ↓compute_res__object [steps.SimpleStep-1749227973248]: 
+      expression: |
+        'var res = {
+        	"isConnected": false,
+        	"reason": "Convertigo session does not exist or has expired"
+        	}'
+    ↓object [steps.JsonToXmlStep-1749227695657]: 
+      jsonObject: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+          - SmartType: 
+            - ↑mode: JS
+            - →→: res
       key: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
           - SmartType: 
             - ↑mode: PLAIN
-            - →→: isConnected
-      type: bool
-      value: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
-          - SmartType: 
-            - ↑mode: PLAIN
-            - →→: false
+            - →→: result

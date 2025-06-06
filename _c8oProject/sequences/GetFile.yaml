@@ -1,7 +1,41 @@
 accessibility: Hidden
 comment: |
+  '<pre>
   Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file you should delete it. The sequence will return the full path of the output file.
   
+  Use docPath variable to search a document by its Path.
+  Or
+  Use docID variable to search a document by its Id.
+  Do not fill both variables or you will have an error.
+  </pre>
+  
+  ### Output
+  ```
+  {
+    "result": [{
+      "filePath": "C:\\Users\\grego\\AppData\\Local\\Temp\\C8oCMIS_11422265988976522516_camera4.gif",
+      "id": "2f9c8608-c2ca-435a-9c86-08c2ca235ab1;1.0",
+      "name": "camera4.gif",
+      "creator": "admin",
+      "creationDate": "2025-06-04T16:33:17Z",
+      "fileSize": 22982,
+      "mimeType": "image/gif",
+      "properties": [
+        {
+          "id": "alfcmis:nodeRef",
+          "name": "Alfresco Node Ref",
+          "value": "workspace://SpacesStore/2f9c8608-c2ca-435a-9c86-08c2ca235ab1"
+        },
+        {
+          "id": "cmis:isImmutable",
+          "name": "Is Immutable",
+          "value": false
+        },
+        ...
+      ]
+    }]
+  }
+  ```'
 ↓GetFile [steps.SimpleStep-1744458011199]: 
   expression: |
     'var cmis = new JavaImporter(
@@ -26,7 +60,10 @@ comment: |
     			throw new Error("Session not found. Please connect first.");
     		}
     		
-    	    // Get document by path
+    	    // Get document by path or ID
+    	    if(docID != null && docID != "" && docPath != null && docPath != ""){
+    			throw new Error("You must set docID or docPath value. Not both!");
+    		}
     	    var doc = (docID != null && docID != "") ? session.getObject(session.createObjectId(docID)) : session.getObjectByPath(docPath);
     	    if(!(doc instanceof Document)){
     			throw new Error("Document not found.");
@@ -146,6 +183,11 @@ comment: |
 ↓TestKO [core.TestCase]: 
   ↓docPath [variables.TestCaseVariable-1744461263910]: 
     value: /MyFolder/FAKE.DOC
+↓TestKO1 [core.TestCase]: 
+  ↓docPath [variables.TestCaseVariable-1749223501118]: 
+    value: /MyFolder/FAKE.DOC
+  ↓docID [variables.TestCaseVariable-1749223509188]: 
+    value: 123456789
 ↓TestOK_id [core.TestCase]: 
   ↓docID [variables.TestCaseVariable-1749112868351]: 
     value: 2f9c8608-c2ca-435a-9c86-08c2ca235ab1
