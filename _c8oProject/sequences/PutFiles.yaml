@@ -54,6 +54,18 @@ comment: |
     		    var props = new HashMap();
     		    props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
     		    props.put(PropertyIds.NAME, fileName);
+    		    
+    		    if(properties != null && properties.length > 0){
+    				var props_res = {};
+    				for (var p=0; p<properties.length; p++){
+    					var prop = JSON.parse(properties[p]);
+    					if(prop.name != null && prop.name != ""){
+    						log.debug("Add property ''" + prop.name + "'' with value ''" + prop.value + "''");
+    						props.put(prop.name, prop.value);
+    						props_res[prop.name] = prop.value;
+    					}
+    				}
+    			}
     		
     		    // Upload file (create document in the folder)
     		    var newDoc = folder.createDocument(props, contentStream, VersioningState.MAJOR);
@@ -69,6 +81,16 @@ comment: |
     				"fileSize": newDoc.getContentStreamLength(),
     				"mimeType": mimeType
     			});
+    			
+    			// Get document properties
+    			/*var props_list = newDoc.getProperties().iterator();
+    			while (props_list.hasNext()) {
+    			    var prop = props_list.next();
+    			    log.warn("ID: " + prop.getId());
+    			    log.warn("Name: " + prop.getDisplayName());
+    			    log.warn("Value: " + prop.getValue());
+    			}*/
+    			
     		    // Clean up
     		    fileInputStream.close();
     			contentStream.getStream().close();
@@ -96,7 +118,7 @@ comment: |
     	return file_path;
     }
     
-    // Fonction utilitaire pour formater une date lisible
+    // Fonction utilitaire pour formater une date ISO 8601
     function formatReadableDate(calendar) {
         if (calendar == null || calendar == "null") {
             return null; // Pas de date
@@ -138,6 +160,16 @@ comment: |
 ↓fileNames [variables.RequestableMultiValuedVariable-1749042782705]: 
   comment: File names of the files to upload to CMIS. If none is provided, it will use the default file names from filePaths variable.
   isFileUpload: true
+↓properties [variables.RequestableMultiValuedVariable-1749125916199]: 
+  comment: |
+    'Properties list for the files. Each entry is a JSON object with the properties to set for the file.
+    
+    <pre>
+    {
+    	name: property_name,
+    	value: property_value
+    }
+    </pre>'
 ↓TestOK [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1744461817295]: 
     value: /Shared
@@ -173,3 +205,28 @@ comment: |
             - ↑value: myFile.pdf
   ↓folderID [variables.TestCaseVariable-1749052537222]: 
     value: 16cfc56d-eb6c-4420-8fc5-6deb6c0420c5
+↓TestOK_folderID_properties [core.TestCase]: 
+  ↓folderPath [variables.TestCaseVariable-1749127382426]: 
+  ↓filePaths [variables.TestCaseMultiValuedVariable-1749127382429]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: .//sample_upload_file.pdf
+  ↓fileNames [variables.TestCaseMultiValuedVariable-1749127382432]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: myFile.pdf
+  ↓folderID [variables.TestCaseVariable-1749127382435]: 
+    value: 16cfc56d-eb6c-4420-8fc5-6deb6c0420c5
+  ↓properties [variables.TestCaseMultiValuedVariable-1749127397053]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: '{"name": "cmis:description", "value": "sample PDF file created by GV"}'

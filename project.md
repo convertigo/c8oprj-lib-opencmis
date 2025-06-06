@@ -130,6 +130,14 @@ comment
 </tr>
 <tr>
 <td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;docID
+</td>
+<td>
+CMIS ID of the file to retrieve. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'
+</td>
+</tr>
+<tr>
+<td>
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;docPath
 </td>
 <td>
@@ -148,10 +156,10 @@ CMIS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
 Get user Personal Files folders from root folder.
 </p></blockquote></details>
 
-<details><summary><b>PutFile</b> : Puts a file in a CMIS repository</summary><blockquote><p>
+<details><summary><b>PutFiles</b> : Puts a file in a CMIS repository</summary><blockquote><p>
 
 
-## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") PutFile
+## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") PutFiles
 
 Puts a file in a CMIS repository. The Sequence will return the folder where the file has been placed.
 
@@ -197,6 +205,21 @@ Target ID in the CMIS. For example '16cfc56d-eb6c-4420-8fc5-6deb6c0420c5'
 </td>
 <td>
 Target path in the CMIS. For example '/MyFolder'
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/multivaluedvariable_color_16x16.png?raw=true "  alt="RequestableMultiValuedVariable" >&nbsp;properties
+</td>
+<td>
+Properties list for the files. Each entry is a JSON object with the properties to set for the file.
+
+<pre>
+{
+	name: property_name,
+	value: property_value
+}
+</pre>
 </td>
 </tr>
 </table>

@@ -13,8 +13,8 @@ comment: |
         java.io
     );
     
-    var outputPath = null;
-    var error = null
+    var error = null;
+    var res = [];
     
     with (cmis) {
     	try {
@@ -27,8 +27,11 @@ comment: |
     		}
     		
     	    // Get document by path
-    	    var doc = session.getObjectByPath(docPath);
-    	    log.warn("Found document: " + doc.getName());
+    	    var doc = (docID != null && docID != "") ? session.getObject(session.createObjectId(docID)) : session.getObjectByPath(docPath);
+    	    if(!(doc instanceof Document)){
+    			throw new Error("Document not found.");
+    		}
+    	    log.debug("Found document: " + doc.getName());
     	
     	    // Get the content stream
     	    var contentStream = doc.getContentStream();
@@ -50,8 +53,39 @@ comment: |
     	    inputStream.close();
     	    fileOut.close();
     	
-    	    log.warn("File saved to: " + 	tempFile.getAbsolutePath());
     		outputPath = tempFile.getAbsolutePath();
+    		log.debug("File saved to: " + outputPath);
+    		
+    		var res_doc = {
+    			"filePath": outputPath,
+    			"id": doc.getId(),
+    			"name": doc.getName(),
+    			"creator": doc.getCreatedBy(),
+    			"creationDate": formatReadableDate(doc.getCreationDate()),
+    			"fileSize": doc.getContentStreamLength(),
+    			"mimeType": doc.getContentStreamMimeType()
+    		};
+    		
+    		// Get document properties
+    		if (doc.getProperties() == null) {
+    		    throw new Error("Properties not found.");
+    		}
+    		
+    		var res_props = [];
+    		doc.getProperties().forEach(function(prop) {
+    		    //log.warn("ID: " + prop.getId());
+    		    //log.warn("Name: " + prop.getDisplayName());
+    		    //log.warn("Value: " + prop.getValue());
+    		    
+    		    var value = convertValue(prop.getValue());
+    		    res_props.push({"id": prop.getId(), "name": prop.getDisplayName(), "value": value});
+    		});
+    		
+    		res_doc["properties"] = res_props;
+    		
+    		res.push(res_doc);
+    		
+    		log.debug("File downloaded: " + JSON.stringify(res));
     
     	} catch (e) {
     		// Handle exceptions
@@ -61,6 +95,25 @@ comment: |
     			log.error("Cause: " + e.cause.message);
     		}
     	}
+    }
+    
+    // Fonction utilitaire pour formater une date ISO 8601
+    function formatReadableDate(calendar) {
+        if (calendar == null || calendar == "null") {
+            return null; // Pas de date
+        }
+        var formatter = new java.text.SimpleDateFormat("yyyy-MM-dd''T''HH:mm:ss''Z''");
+        formatter.setTimeZone(java.util.TimeZone.getTimeZone("UTC")); // Assure un format en UTC
+        return formatter.format(calendar.getTime());
+    }
+    
+    function convertValue(value) {
+        if (value instanceof java.math.BigInteger) {
+            return value.toString(); // Conversion en String
+        } else if (value instanceof java.util.GregorianCalendar) {
+            return formatReadableDate(value.getTime()); // Conversion Date → ISO 8601
+        }
+        return value; // Retourne la valeur originale
     }
     '
 ↓jIf [steps.IfStep-1744458011202]: 
@@ -73,24 +126,29 @@ comment: |
           - ↑mode: JS
           - →→: error
   ↓Return [steps.ReturnStep-1744458011208]: 
-↓filePath [steps.JsonFieldStep-1744458940513]: 
+↓object [steps.JsonToXmlStep-1749113762366]: 
+  jsonObject: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: JS
+        - →→: res
   key: 
     - xmlizable: 
       - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
       - SmartType: 
         - ↑mode: PLAIN
-        - →→: outputPath
-  value: 
-    - xmlizable: 
-      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
-      - SmartType: 
-        - ↑mode: JS
-        - →→: outputPath
+        - →→: result
 ↓docPath [variables.RequestableVariable-1744458011217]: 
   comment: CMIS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
+↓docID [variables.RequestableVariable-1749054687911]: 
+  comment: CMIS ID of the file to retrieve. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'
 ↓TestKO [core.TestCase]: 
   ↓docPath [variables.TestCaseVariable-1744461263910]: 
     value: /MyFolder/FAKE.DOC
-↓TestOK [core.TestCase]: 
+↓TestOK_id [core.TestCase]: 
+  ↓docID [variables.TestCaseVariable-1749112868351]: 
+    value: 2f9c8608-c2ca-435a-9c86-08c2ca235ab1
+↓TestOK_path [core.TestCase]: 
   ↓docPath [variables.TestCaseVariable-1744458375381]: 
-    value: /MyFolder/TesseraSanitariaTati2025.pdf
+    value: /Shared/myFile.pdf

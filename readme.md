@@ -17,7 +17,7 @@ For more technical informations : [documentation](./project.md)
     - [Connect](#connect)
     - [GetFile](#getfile)
     - [PersonalFiles](#personalfiles)
-    - [PutFile](#putfile)
+    - [PutFiles](#putfiles)
 
 
 ## Installation
@@ -100,6 +100,9 @@ Gets a file from CMIS repository. The file will be retrieved and saved in a temp
 <th>name</th><th>comment</th>
 </tr>
 <tr>
+<td>docID</td><td>CMIS ID of the file to retrieve. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'</td>
+</tr>
+<tr>
 <td>docPath</td><td>CMIS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'</td>
 </tr>
 </table>
@@ -108,7 +111,7 @@ Gets a file from CMIS repository. The file will be retrieved and saved in a temp
 
 Get user Personal Files folders from root folder.
 
-### PutFile
+### PutFiles
 
 Puts a file in a CMIS repository. The Sequence will return the folder where the file has been placed.
 
@@ -130,6 +133,16 @@ Puts a file in a CMIS repository. The Sequence will return the folder where the 
 </tr>
 <tr>
 <td>folderPath</td><td>Target path in the CMIS. For example '/MyFolder'</td>
+</tr>
+<tr>
+<td>properties</td><td>Properties list for the files. Each entry is a JSON object with the properties to set for the file.
+
+<pre>
+{
+	name: property_name,
+	value: property_value
+}
+</pre></td>
 </tr>
 </table>
 
