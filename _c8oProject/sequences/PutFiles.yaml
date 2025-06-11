@@ -9,9 +9,15 @@ comment: |
   Do not fill both variables or you will have an error.
   
   Set one or multiple values for the filePaths variable to upload one or multiple documents.
+  
   If you set the fileNames values for each document, this will change the default file names from the filePaths variable.
+  Set ''null'' or empty if you don''t want to change file name.
   
   You can add document properties using the properties variable.
+  Set ''null'' or empty if you don''t want to add properties for a file.
+  Set an array of objects with name/value key value pairs.
+  For example:
+  [{"name": "cmis:description", "value": "sample PDF file created by GV"}]
   </pre>
   
   ### Output
@@ -24,7 +30,14 @@ comment: |
       "creator": "admin",
       "creationDate": "2025-06-06T15:37:05Z",
       "fileSize": 19475,
-      "mimeType": "application/pdf"
+      "mimeType": "application/pdf",
+      "properties": [
+          {
+            "id": "alfcmis:nodeRef",
+            "name": "Alfresco Node Ref",
+            "value": "workspace://SpacesStore/2f60771b-92bc-4ac4-a077-1b92bc5ac4b4"
+          },
+          ...
     }, ...]
   }
   ```
@@ -60,12 +73,11 @@ comment: |
     		for (var i = 0; i < filePaths.length; i++) {	
     		    // Local file to upload
     		    var file = new File(get_full_path(filePaths[i]));
-    		
-    		    var fileName = (fileNames != null && fileNames[i] != "") ? fileNames[i] : file.getName();
+    		    var fileName = (fileNames != null && fileNames[i] != "" && fileNames[i] != "null" && fileNames[i] !== undefined) ? fileNames[i] : file.getName();
     		    var fileInputStream = new FileInputStream(file);
     		    var fileLength = file.length();
     		
-    			// 🧠 3. Try to detect MIME type
+    			// Try to detect MIME type
     			var mimeType = java.nio.file.Files.probeContentType(file.toPath());
     			if (mimeType == null) {
     			     mimeType = "application/octet-stream"; // fallback
@@ -85,24 +97,29 @@ comment: |
     		    props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
     		    props.put(PropertyIds.NAME, fileName);
     		    
-    		    if(properties != null && properties.length > 0){
-    				var props_res = {};
-    				for (var p=0; p<properties.length; p++){
-    					var prop = JSON.parse(properties[p]);
-    					if(prop.name != null && prop.name != ""){
-    						log.debug("Add property ''" + prop.name + "'' with value ''" + prop.value + "''");
-    						props.put(prop.name, prop.value);
-    						props_res[prop.name] = prop.value;
+    		    if(properties != null && properties[i] != "" && properties[i] != "null" && properties[i] !== undefined){
+    				var props_res = JSON.parse(properties[i]);
+    				props_res.forEach(function(obj){
+    					if(!("name" in obj)){
+    						throw new Error("Property must defined a ''name'' key.");
+    					} else {
+    						if (!("value" in obj)) {
+    				            obj.value = null;
+    				        }
+    				        log.debug("Add property ''" + obj.name + "'' with value ''" + obj.value + "''");
+    				    	props.put(obj.name, obj.value);
     					}
-    				}
+    				});
     			}
+    			//TODO: comment underneath line 
+    			//continue;
     		
     		    // Upload file (create document in the folder)
     		    var newDoc = folder.createDocument(props, contentStream, VersioningState.MAJOR);
     		    log.debug("✅ File uploaded: " + newDoc.getName());
     		    log.debug("CMIS path: " + newDoc.getPaths().toArray()[0]);
     			
-    			res.push({
+    			var res_doc = {
     				"filePath": newDoc.getPaths().toArray()[0],
     				"id": newDoc.getId(),
     				"name": newDoc.getName(),
@@ -110,17 +127,22 @@ comment: |
     				"creationDate": formatReadableDate(newDoc.getCreationDate()),
     				"fileSize": newDoc.getContentStreamLength(),
     				"mimeType": mimeType
-    			});
+    			};
     			
     			// Get document properties
-    			/*var props_list = newDoc.getProperties().iterator();
-    			while (props_list.hasNext()) {
-    			    var prop = props_list.next();
-    			    log.warn("ID: " + prop.getId());
-    			    log.warn("Name: " + prop.getDisplayName());
-    			    log.warn("Value: " + prop.getValue());
-    			}*/
+    			if (newDoc.getProperties() == null) {
+    			    throw new Error("Properties not found.");
+    			}
     			
+    			var res_props = [];
+    			newDoc.getProperties().forEach(function(prop) {
+    			    var value = convertValue(prop.getValue());
+    			    res_props.push({"id": prop.getId(), "name": prop.getDisplayName(), "value": value});
+    			});
+    			
+    			res_doc["properties"] = res_props;
+    			res.push(res_doc);
+    						
     		    // Clean up
     		    fileInputStream.close();
     			contentStream.getStream().close();
@@ -129,6 +151,7 @@ comment: |
     	} catch (e) {
     		// Handle exceptions
     		error = e.message;
+    		log.error("Error: " + error);
     		if (e.cause) {
     			log.error("Cause: " + e.cause.message);
     		}
@@ -156,7 +179,17 @@ comment: |
         var formatter = new java.text.SimpleDateFormat("yyyy-MM-dd''T''HH:mm:ss''Z''");
         formatter.setTimeZone(java.util.TimeZone.getTimeZone("UTC")); // Assure un format en UTC
         return formatter.format(calendar.getTime());
-    }'
+    }
+    
+    function convertValue(value) {
+        if (value instanceof java.math.BigInteger) {
+            return value.toString(); // Conversion en String
+        } else if (value instanceof java.util.GregorianCalendar) {
+            return formatReadableDate(value.getTime()); // Conversion Date → ISO 8601
+        }
+        return value; // Retourne la valeur originale
+    }
+    '
 ↓jIf [steps.IfStep-1744461342359]: 
   condition: error != null
   ↓Error_structure [steps.XMLErrorStep-1744461342362]: 
@@ -209,7 +242,7 @@ comment: |
         - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
         - com.twinsoft.convertigo.beans.common.XMLVector: 
           - java.lang.String: 
-            - ↑value: .//sample_upload_file.pdf
+            - ↑value: .//samples/sample_upload_file.pdf
   ↓fileNames [variables.TestCaseMultiValuedVariable-1749044164757]: 
     value: 
       - xmlizable: 
@@ -225,7 +258,7 @@ comment: |
         - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
         - com.twinsoft.convertigo.beans.common.XMLVector: 
           - java.lang.String: 
-            - ↑value: .//sample_upload_file.pdf
+            - ↑value: .//samples/sample_upload_file.pdf
   ↓fileNames [variables.TestCaseMultiValuedVariable-1749052525232]: 
     value: 
       - xmlizable: 
@@ -243,7 +276,7 @@ comment: |
         - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
         - com.twinsoft.convertigo.beans.common.XMLVector: 
           - java.lang.String: 
-            - ↑value: .//sample_upload_file.pdf
+            - ↑value: .//samples/sample_upload_file.pdf
   ↓fileNames [variables.TestCaseMultiValuedVariable-1749127382432]: 
     value: 
       - xmlizable: 
@@ -252,11 +285,42 @@ comment: |
           - java.lang.String: 
             - ↑value: myFile.pdf
   ↓folderID [variables.TestCaseVariable-1749127382435]: 
-    value: 16cfc56d-eb6c-4420-8fc5-6deb6c0420c5
+    value: 28759eee-6181-45ee-b59e-ee618185ee3d
   ↓properties [variables.TestCaseMultiValuedVariable-1749127397053]: 
     value: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
         - com.twinsoft.convertigo.beans.common.XMLVector: 
           - java.lang.String: 
-            - ↑value: '{"name": "cmis:description", "value": "sample PDF file created by GV"}'
+            - ↑value: '[{"name": "cmis:description", "value": "sample PDF file created by GV"}]'
+↓TestOK_folderID_properties1 [core.TestCase]: 
+  ↓folderPath [variables.TestCaseVariable-1749629860636]: 
+  ↓filePaths [variables.TestCaseMultiValuedVariable-1749629860639]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: .//samples/sample_upload_file.pdf
+          - java.lang.String: 
+            - ↑value: .//samples/new_people_sample.csv
+          - java.lang.String: 
+            - ↑value: .//samples/sample_image.gif
+  ↓fileNames [variables.TestCaseMultiValuedVariable-1749629860642]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: myFile.pdf
+          - java.lang.String: 
+            - ↑value: null
+  ↓folderID [variables.TestCaseVariable-1749629860645]: 
+    value: 28759eee-6181-45ee-b59e-ee618185ee3d
+  ↓properties [variables.TestCaseMultiValuedVariable-1749629860648]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: '[{"name": "cmis:description", "value": "sample PDF file created by GV"}]'

@@ -148,6 +148,87 @@ User name to acess the CMIS
 
 </p></blockquote></details>
 
+<details><summary><b>DeleteFile</b> : <pre></summary><blockquote><p>
+
+
+## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") DeleteFile
+
+<pre>
+Deletes a file from CMIS repository.
+
+Use docPath variable to search a document by its Path.
+Or
+Use docID variable to search a document by its Id.
+Do not fill both variables or you will have an error.
+</pre>
+
+### Output
+```
+{
+  "result": [{
+    "id": "2f9c8608-c2ca-435a-9c86-08c2ca235ab1;1.0",
+    "name": "camera4.gif",
+    "creator": "admin",
+    "creationDate": "2025-06-04T16:33:17Z",
+    "fileSize": 22982,
+    "mimeType": "image/gif",
+    "properties": [
+      {
+        "id": "alfcmis:nodeRef",
+        "name": "Alfresco Node Ref",
+        "value": "workspace://SpacesStore/2f9c8608-c2ca-435a-9c86-08c2ca235ab1"
+      },
+      {
+        "id": "cmis:isImmutable",
+        "name": "Is Immutable",
+        "value": false
+      },
+      ...
+    ]
+  }]
+}
+```
+
+<span style="color:DarkGoldenRod">Variables</span>
+
+<table>
+<tr>
+<th>
+name
+</th>
+<th>
+comment
+</th>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;allVersions
+</td>
+<td>
+If true, deletes all the document versions.<br/>
+If false, deletes only the last version or only the provided version with the docID like: '5d47bb40-e241-4fe7-87bb-40e2416fe76a;1.0'
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;docID
+</td>
+<td>
+CMIS ID of the file to delete. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;docPath
+</td>
+<td>
+CMIS Path of the file to delete. For example '/MyFolder/Myfile.doc'
+</td>
+</tr>
+</table>
+
+</p></blockquote></details>
+
 <details><summary><b>GetFile</b> : <pre></summary><blockquote><p>
 
 
@@ -243,9 +324,15 @@ Use folderID variable to put a document in a folder by its Id.
 Do not fill both variables or you will have an error.
 
 Set one or multiple values for the filePaths variable to upload one or multiple documents.
+
 If you set the fileNames values for each document, this will change the default file names from the filePaths variable.
+Set 'null' or empty if you don't want to change file name.
 
 You can add document properties using the properties variable.
+Set 'null' or empty if you don't want to add properties for a file.
+Set an array of objects with name/value key value pairs.
+For example:
+[{"name": "cmis:description", "value": "sample PDF file created by GV"}]
 </pre>
 
 ### Output
@@ -258,7 +345,14 @@ You can add document properties using the properties variable.
     "creator": "admin",
     "creationDate": "2025-06-06T15:37:05Z",
     "fileSize": 19475,
-    "mimeType": "application/pdf"
+    "mimeType": "application/pdf",
+    "properties": [
+        {
+          "id": "alfcmis:nodeRef",
+          "name": "Alfresco Node Ref",
+          "value": "workspace://SpacesStore/2f60771b-92bc-4ac4-a077-1b92bc5ac4b4"
+        },
+        ...
   }, ...]
 }
 ```

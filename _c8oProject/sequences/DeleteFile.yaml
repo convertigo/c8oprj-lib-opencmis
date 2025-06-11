@@ -1,7 +1,7 @@
 accessibility: Hidden
 comment: |
   '<pre>
-  Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file you should delete it. The sequence will return the full path of the output file.
+  Deletes a file from CMIS repository.
   
   Use docPath variable to search a document by its Path.
   Or
@@ -13,7 +13,6 @@ comment: |
   ```
   {
     "result": [{
-      "filePath": "C:\\Users\\grego\\AppData\\Local\\Temp\\C8oCMIS_11422265988976522516_camera4.gif",
       "id": "2f9c8608-c2ca-435a-9c86-08c2ca235ab1;1.0",
       "name": "camera4.gif",
       "creator": "admin",
@@ -36,7 +35,7 @@ comment: |
     }]
   }
   ```'
-↓GetFile [steps.SimpleStep-1744458011199]: 
+↓DeleteFile [steps.SimpleStep-1749546223373]: 
   expression: |
     'var cmis = new JavaImporter(
         org.apache.chemistry.opencmis.client.api,
@@ -69,32 +68,8 @@ comment: |
     			throw new Error("Document not found.");
     		}
     	    log.debug("Found document: " + doc.getName());
-    	
-    	    // Get the content stream
-    	    var contentStream = doc.getContentStream();
-    	    var inputStream = contentStream.getStream();
-    	
-    		// Create temp file (prefix, suffix)
-    		var tempFile = File.createTempFile("C8oCMIS_", "_" + doc.getName());
-    		var fileOut = new FileOutputStream(tempFile);
-    	
-    	    // Buffer to read/write
-    	    var buffer = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, 10*1024);
-    	    var bytesRead = 0;
-    	
-    	    while ((bytesRead = inputStream.read(buffer)) !== -1) {
-    	        fileOut.write(buffer, 0, bytesRead);
-    	    }
-    	
-    	    // Close streams
-    	    inputStream.close();
-    	    fileOut.close();
-    	
-    		outputPath = tempFile.getAbsolutePath();
-    		log.debug("File saved to: " + outputPath);
-    		
+    
     		var res_doc = {
-    			"filePath": outputPath,
     			"id": doc.getId(),
     			"name": doc.getName(),
     			"creator": doc.getCreatedBy(),
@@ -115,12 +90,17 @@ comment: |
     		});
     		
     		res_doc["properties"] = res_props;
+    		
     		res.push(res_doc);
-    		log.debug("File downloaded: " + JSON.stringify(res));
+    		
+    		doc.delete(allVersions != null && allVersions != "" ? allVersions.toLowerCase() == "true" : true);
+    		
+    		log.debug("File deleted: " + JSON.stringify(res));
+    
     	} catch (e) {
     		// Handle exceptions
+    		log.error("Error: " + e.message);
     		error = e.message;
-    		log.error("Error: " + error);
     		if (e.cause) {
     			log.error("Cause: " + e.cause.message);
     		}
@@ -146,17 +126,17 @@ comment: |
         return value; // Retourne la valeur originale
     }
     '
-↓jIf [steps.IfStep-1744458011202]: 
+↓jIf [steps.IfStep-1749546223376]: 
   condition: error != null
-  ↓Error_structure [steps.XMLErrorStep-1744458011205]: 
+  ↓Error_structure [steps.XMLErrorStep-1749546223379]: 
     message: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
         - SmartType: 
           - ↑mode: JS
           - →→: error
-  ↓Return [steps.ReturnStep-1744458011208]: 
-↓object [steps.JsonToXmlStep-1749113762366]: 
+  ↓Return [steps.ReturnStep-1749546223382]: 
+↓object [steps.JsonToXmlStep-1749546223385]: 
   jsonObject: 
     - xmlizable: 
       - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
@@ -169,21 +149,26 @@ comment: |
       - SmartType: 
         - ↑mode: PLAIN
         - →→: result
-↓docPath [variables.RequestableVariable-1744458011217]: 
-  comment: CMIS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
-↓docID [variables.RequestableVariable-1749054687911]: 
-  comment: CMIS ID of the file to retrieve. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'
+↓docPath [variables.RequestableVariable-1749546223388]: 
+  comment: CMIS Path of the file to delete. For example '/MyFolder/Myfile.doc'
+↓docID [variables.RequestableVariable-1749546223391]: 
+  comment: CMIS ID of the file to delete. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'
+↓allVersions [variables.RequestableVariable-1749546870549]: 
+  comment: |
+    'If true, deletes all the document versions.<br/>
+    If false, deletes only the last version or only the provided version with the docID like: ''5d47bb40-e241-4fe7-87bb-40e2416fe76a;1.0'''
+  value: true
 ↓TestKO [core.TestCase]: 
-  ↓docPath [variables.TestCaseVariable-1744461263910]: 
+  ↓docPath [variables.TestCaseVariable-1749546223395]: 
     value: /MyFolder/FAKE.DOC
 ↓TestKO1 [core.TestCase]: 
-  ↓docPath [variables.TestCaseVariable-1749223501118]: 
+  ↓docPath [variables.TestCaseVariable-1749546223399]: 
     value: /MyFolder/FAKE.DOC
-  ↓docID [variables.TestCaseVariable-1749223509188]: 
+  ↓docID [variables.TestCaseVariable-1749546223402]: 
     value: 123456789
 ↓TestOK_id [core.TestCase]: 
-  ↓docID [variables.TestCaseVariable-1749112868351]: 
-    value: a2d27965-d4bc-4ed6-9279-65d4bc4ed620;2.0
+  ↓docID [variables.TestCaseVariable-1749546223406]: 
+    value: 5d47bb40-e241-4fe7-87bb-40e2416fe76a;1.0
 ↓TestOK_path [core.TestCase]: 
-  ↓docPath [variables.TestCaseVariable-1744458375381]: 
+  ↓docPath [variables.TestCaseVariable-1749546223410]: 
     value: /Shared/myFile.pdf
