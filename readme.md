@@ -314,6 +314,11 @@ For example:
 }
 </pre></td>
 </tr>
+<tr>
+<td>secondaries</td><td><pre>
+(Optional) Secondary Types list for the files. Each entry is a JSON array with the aspects to add for the file.
+</pre></td>
+</tr>
 </table>
 
 

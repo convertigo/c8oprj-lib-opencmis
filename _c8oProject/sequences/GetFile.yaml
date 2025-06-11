@@ -115,6 +115,11 @@ comment: |
     		});
     		
     		res_doc["properties"] = res_props;
+    		
+    		// Get document secondary types as as separated key
+    		var secondaryTypes = doc.getPropertyValue("cmis:secondaryObjectTypeIds");
+    		res_doc["secondaryObjectTypeIds"] = secondaryTypes;
+    		
     		res.push(res_doc);
     		log.debug("File downloaded: " + JSON.stringify(res));
     	} catch (e) {
@@ -183,7 +188,7 @@ comment: |
     value: 123456789
 ↓TestOK_id [core.TestCase]: 
   ↓docID [variables.TestCaseVariable-1749112868351]: 
-    value: a2d27965-d4bc-4ed6-9279-65d4bc4ed620;2.0
+    value: 3fef83e9-a1ea-4cc7-af83-e9a1ea1cc7e2
 ↓TestOK_path [core.TestCase]: 
   ↓docPath [variables.TestCaseVariable-1744458375381]: 
     value: /Shared/myFile.pdf

@@ -48,6 +48,7 @@ comment: |
         org.apache.chemistry.opencmis.client.api,
         org.apache.chemistry.opencmis.client.runtime,
         org.apache.chemistry.opencmis.commons.enums,
+        org.apache.chemistry.opencmis.commons.PropertyIds,
         org.apache.chemistry.opencmis.commons,
         java.util,
         java.io
@@ -97,6 +98,7 @@ comment: |
     		    props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
     		    props.put(PropertyIds.NAME, fileName);
     		    
+    		    // Adding properties objects
     		    if(properties != null && properties[i] != "" && properties[i] != "null" && properties[i] !== undefined){
     				var props_res = JSON.parse(properties[i]);
     				props_res.forEach(function(obj){
@@ -111,8 +113,17 @@ comment: |
     					}
     				});
     			}
-    			//TODO: comment underneath line 
-    			//continue;
+    			
+    			// Adding Secondary Types
+    			if(secondaries != null && secondaries[i] != "" && secondaries[i] != "null" && secondaries[i] !== undefined){
+    				var sec_res = JSON.parse(secondaries[i]);
+    				var secondaryTypes = new ArrayList();
+    				sec_res.forEach(function(type){
+    					secondaryTypes.add(type);
+    					log.debug("Adding aspect ''" + type + "''");
+    				});
+    				props.put("cmis:secondaryObjectTypeIds", secondaryTypes);
+    			}
     		
     		    // Upload file (create document in the folder)
     		    var newDoc = folder.createDocument(props, contentStream, VersioningState.MAJOR);
@@ -233,6 +244,11 @@ comment: |
     	value: property_value
     }
     </pre>'
+↓secondaries [variables.RequestableMultiValuedVariable-1749645685177]: 
+  comment: |
+    <pre>
+    (Optional) Secondary Types list for the files. Each entry is a JSON array with the aspects to add for the file.
+    </pre>
 ↓TestOK [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1744461817295]: 
     value: /Shared
@@ -293,7 +309,7 @@ comment: |
         - com.twinsoft.convertigo.beans.common.XMLVector: 
           - java.lang.String: 
             - ↑value: '[{"name": "cmis:description", "value": "sample PDF file created by GV"}]'
-↓TestOK_folderID_properties1 [core.TestCase]: 
+↓TestOK_folderID_properties_aspects [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1749629860636]: 
   ↓filePaths [variables.TestCaseMultiValuedVariable-1749629860639]: 
     value: 
@@ -315,6 +331,8 @@ comment: |
             - ↑value: myFile.pdf
           - java.lang.String: 
             - ↑value: null
+          - java.lang.String: 
+            - ↑value: camera4.gif
   ↓folderID [variables.TestCaseVariable-1749629860645]: 
     value: 28759eee-6181-45ee-b59e-ee618185ee3d
   ↓properties [variables.TestCaseMultiValuedVariable-1749629860648]: 
@@ -324,3 +342,14 @@ comment: |
         - com.twinsoft.convertigo.beans.common.XMLVector: 
           - java.lang.String: 
             - ↑value: '[{"name": "cmis:description", "value": "sample PDF file created by GV"}]'
+          - java.lang.String: 
+            - ↑value: null
+  ↓secondaries [variables.TestCaseMultiValuedVariable-1749646498868]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: null
+          - java.lang.String: 
+            - ↑value: '["P:cm:titled"]'

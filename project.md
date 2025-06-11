@@ -416,6 +416,16 @@ Target path in the CMIS. For example '/MyFolder'
 </pre>
 </td>
 </tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/multivaluedvariable_color_16x16.png?raw=true "  alt="RequestableMultiValuedVariable" >&nbsp;secondaries
+</td>
+<td>
+<pre>
+(Optional) Secondary Types list for the files. Each entry is a JSON array with the aspects to add for the file.
+</pre>
+</td>
+</tr>
 </table>
 
 </p></blockquote></details>
