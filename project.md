@@ -25,18 +25,16 @@ does nothing
 <details><summary><span style="color:DarkGoldenRod"><i>Sequences</i></span></summary><blockquote><p>
 
 
-<details><summary><b>CheckConnect</b> : <pre></summary><blockquote><p>
+<details><summary><b>CheckConnect</b> : ### Check if the CMIS session is still alive</summary><blockquote><p>
 
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") CheckConnect
 
-<pre>
-Check if the CMIS session is still alive.
+### Check if the CMIS session is still alive.
 
 Will return isConnected true/false and the session name if available.
-</pre>
 
-### Output
+#### Output
 
 ```
 {
@@ -55,18 +53,18 @@ Will return isConnected true/false and the session name if available.
 ```
 </p></blockquote></details>
 
-<details><summary><b>Connect</b> : <pre></summary><blockquote><p>
+<details><summary><b>Connect</b> : ### Establish a Session between Convertigo and the Target CMIS (Alfresco)</summary><blockquote><p>
 
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") Connect
 
-<pre>
-Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CMIS (Alfresco). The session will be automatically held in the Convertigo Session.
+### Establish a Session between Convertigo and the Target CMIS (Alfresco)
+
+Has to be called before any other Sequence. The session will be automatically held in the Convertigo Session.
 
 Will return the list of folders of the users root Directory with folder name, id and folder path.
-</pre>
 
-### Output
+#### Output
 ```
 {
   "folders": [
@@ -148,21 +146,19 @@ User name to acess the CMIS
 
 </p></blockquote></details>
 
-<details><summary><b>DeleteFile</b> : <pre></summary><blockquote><p>
+<details><summary><b>DeleteFile</b> : ### Deletes a file from a CMIS repository</summary><blockquote><p>
 
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") DeleteFile
 
-<pre>
-Deletes a file from CMIS repository.
+### Deletes a file from a CMIS repository.
 
 Use docPath variable to search a document by its Path.
 Or
 Use docID variable to search a document by its Id.
 Do not fill both variables or you will have an error.
-</pre>
 
-### Output
+#### Output
 ```
 {
   "result": [{
@@ -229,19 +225,17 @@ CMIS Path of the file to delete. For example '/MyFolder/Myfile.doc'
 
 </p></blockquote></details>
 
-<details><summary><b>GetFile</b> : <pre></summary><blockquote><p>
+<details><summary><b>GetFile</b> : Gets a file from CMIS repository</summary><blockquote><p>
 
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") GetFile
 
-<pre>
 Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file you should delete it. The sequence will return the full path of the output file.
 
 Use docPath variable to search a document by its Path.
 Or
 Use docID variable to search a document by its Id.
 Do not fill both variables or you will have an error.
-</pre>
 
 ### Output
 ```
@@ -310,13 +304,14 @@ CMIS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
 Get user Personal Files folders from root folder.
 </p></blockquote></details>
 
-<details><summary><b>PutFiles</b> : <pre></summary><blockquote><p>
+<details><summary><b>PutFiles</b> : ### Puts a file in a CMIS repository</summary><blockquote><p>
 
 
 ## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") PutFiles
 
-<pre>
-Puts a file in a CMIS repository. The Sequence will return the folder where the file has been placed.
+### Puts a file in a CMIS repository. 
+
+The Sequence will return the folder where the file has been placed.
 
 Use folderPath variable to put a document in a folder by its Path.
 Or
@@ -335,7 +330,7 @@ For example:
 [{"name": "cmis:description", "value": "sample PDF file created by GV"}]
 </pre>
 
-### Output
+#### Output
 ```
 {
   "result": [{
@@ -406,14 +401,16 @@ Target path in the CMIS. For example '/MyFolder'
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/multivaluedvariable_color_16x16.png?raw=true "  alt="RequestableMultiValuedVariable" >&nbsp;properties
 </td>
 <td>
-<pre>
-(Optional) Properties list for the files. Each entry is a JSON object with the properties to set for the file.
+(Optional) Properties array for the files. Each entry is a JSON object with the properties to set for the file.
 
+```
 {
 	name: property_name,
 	value: property_value
 }
-</pre>
+```
+
+Set 'null' or empty if you don't want to add properties for a file.
 </td>
 </tr>
 <tr>
@@ -421,9 +418,112 @@ Target path in the CMIS. For example '/MyFolder'
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/multivaluedvariable_color_16x16.png?raw=true "  alt="RequestableMultiValuedVariable" >&nbsp;secondaries
 </td>
 <td>
-<pre>
-(Optional) Secondary Types list for the files. Each entry is a JSON array with the aspects to add for the file.
-</pre>
+(Optional) Secondary Types array for the files. Each entry is a JSON array with the aspects to add for the file.
+
+
+For example:
+```
+[
+	"P:cm:titled",
+	"P:custom:prop"
+]
+```
+
+Set 'null' or empty if you don't want to add secondary Types for a file.
+</td>
+</tr>
+</table>
+
+</p></blockquote></details>
+
+<details><summary><b>UpdateProperties</b> : Updates file properties in a CMIS repository</summary><blockquote><p>
+
+
+## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") UpdateProperties
+
+Updates file properties in a CMIS repository.
+
+Use docPath variable to search a document by its Path.
+Or
+Use docID variable to search a document by its Id.
+Do not fill both variables or you will have an error.
+
+You can pudate document properties using the properties variable.
+Set an array of objects with name/value key value pairs.
+For example:
+[{"name": "cmis:description", "value": "sample PDF file created by GV"}]
+
+### Output
+```
+{
+  "result": [{
+    "filePath": "/Shared/myFile.pdf",
+    "id": "1e1d7d10-a8cd-4e8f-9d7d-10a8cd2e8f10;1.0",
+    "name": "myFile.pdf",
+    "creator": "admin",
+    "creationDate": "2025-06-06T15:37:05Z",
+    "fileSize": 19475,
+    "mimeType": "application/pdf",
+    "properties": [
+        {
+          "id": "alfcmis:nodeRef",
+          "name": "Alfresco Node Ref",
+          "value": "workspace://SpacesStore/2f60771b-92bc-4ac4-a077-1b92bc5ac4b4"
+        },
+        ...
+  }, ...]
+}
+```
+
+
+<span style="color:DarkGoldenRod">Variables</span>
+
+<table>
+<tr>
+<th>
+name
+</th>
+<th>
+comment
+</th>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;docID
+</td>
+<td>
+CMIS Id of the file whose properties are to be updated. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;docPath
+</td>
+<td>
+CMIS Path of the file whose properties are to be updated. For example '/MyFolder/Myfile.doc'
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;properties
+</td>
+<td>
+(Optional) Properties array for the file. Each entry is a JSON object with the properties to update for the file.
+
+[
+	{
+		name: property_name,
+		value: property_value
+	}
+]
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;secondaries
+</td>
+<td>
+(Optional) Secondary Types array for the files. JSON array with the aspects to add for the file.
 </td>
 </tr>
 </table>

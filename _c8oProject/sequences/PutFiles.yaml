@@ -1,7 +1,8 @@
 accessibility: Hidden
 comment: |
-  '<pre>
-  Puts a file in a CMIS repository. The Sequence will return the folder where the file has been placed.
+  '### Puts a file in a CMIS repository. 
+  
+  The Sequence will return the folder where the file has been placed.
   
   Use folderPath variable to put a document in a folder by its Path.
   Or
@@ -20,7 +21,7 @@ comment: |
   [{"name": "cmis:description", "value": "sample PDF file created by GV"}]
   </pre>
   
-  ### Output
+  #### Output
   ```
   {
     "result": [{
@@ -236,19 +237,30 @@ comment: |
   isFileUpload: true
 ↓properties [variables.RequestableMultiValuedVariable-1749125916199]: 
   comment: |
-    '<pre>
-    (Optional) Properties list for the files. Each entry is a JSON object with the properties to set for the file.
+    '(Optional) Properties array for the files. Each entry is a JSON object with the properties to set for the file.
     
+    ```
     {
     	name: property_name,
     	value: property_value
     }
-    </pre>'
+    ```
+    
+    Set ''null'' or empty if you don''t want to add properties for a file.'
 ↓secondaries [variables.RequestableMultiValuedVariable-1749645685177]: 
   comment: |
-    <pre>
-    (Optional) Secondary Types list for the files. Each entry is a JSON array with the aspects to add for the file.
-    </pre>
+    '(Optional) Secondary Types array for the files. Each entry is a JSON array with the aspects to add for the file.
+    
+    
+    For example:
+    ```
+    [
+    	"P:cm:titled",
+    	"P:custom:prop"
+    ]
+    ```
+    
+    Set ''null'' or empty if you don''t want to add secondary Types for a file.'
 ↓TestOK [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1744461817295]: 
     value: /Shared
@@ -353,3 +365,20 @@ comment: |
             - ↑value: null
           - java.lang.String: 
             - ↑value: '["P:cm:titled"]'
+↓TestOK_spaces [core.TestCase]: 
+  ↓folderPath [variables.TestCaseVariable-1749744495377]: 
+    value: /Shared
+  ↓filePaths [variables.TestCaseMultiValuedVariable-1749744495380]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: .//samples/sample image2.gif
+  ↓fileNames [variables.TestCaseMultiValuedVariable-1749744495383]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: my Image.gif

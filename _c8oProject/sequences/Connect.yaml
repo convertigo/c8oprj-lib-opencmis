@@ -1,12 +1,12 @@
 accessibility: Hidden
 comment: |
-  '<pre>
-  Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CMIS (Alfresco). The session will be automatically held in the Convertigo Session.
+  '### Establish a Session between Convertigo and the Target CMIS (Alfresco)
+  
+  Has to be called before any other Sequence. The session will be automatically held in the Convertigo Session.
   
   Will return the list of folders of the users root Directory with folder name, id and folder path.
-  </pre>
   
-  ### Output
+  #### Output
   ```
   {
     "folders": [
@@ -294,4 +294,9 @@ comment: |
 ↓TestOK_session_parameters [core.TestCase]: 
   ↓user [variables.TestCaseVariable-1747126370334]: 
     value: admin
-  ↓password [variables.TestCaseVariable-1747126370337]: 
+  ↓password [variables.TestCaseVariable-1749744744545]: 
+    value: 
+      - ↑ciphered: true
+      - ↑traceable: false
+      - →→: x144a9012e09548e8f0eb9a15054ed371
+    visibility: '-1'

@@ -19,6 +19,7 @@ For more technical informations : [documentation](./project.md)
     - [GetFile](#getfile)
     - [PersonalFiles](#personalfiles)
     - [PutFiles](#putfiles)
+    - [UpdateProperties](#updateproperties)
 
 
 ## Installation
@@ -51,13 +52,11 @@ For more technical informations : [documentation](./project.md)
 
 ### CheckConnect
 
-<pre>
-Check if the CMIS session is still alive.
+### Check if the CMIS session is still alive.
 
 Will return isConnected true/false and the session name if available.
-</pre>
 
-### Output
+#### Output
 
 ```
 {
@@ -77,13 +76,13 @@ Will return isConnected true/false and the session name if available.
 
 ### Connect
 
-<pre>
-Has to be called before any other Sequence. This will establish a Session between Convertigo and the Target CMIS (Alfresco). The session will be automatically held in the Convertigo Session.
+### Establish a Session between Convertigo and the Target CMIS (Alfresco)
+
+Has to be called before any other Sequence. The session will be automatically held in the Convertigo Session.
 
 Will return the list of folders of the users root Directory with folder name, id and folder path.
-</pre>
 
-### Output
+#### Output
 ```
 {
   "folders": [
@@ -130,16 +129,14 @@ Will return the list of folders of the users root Directory with folder name, id
 
 ### DeleteFile
 
-<pre>
-Deletes a file from CMIS repository.
+### Deletes a file from a CMIS repository.
 
 Use docPath variable to search a document by its Path.
 Or
 Use docID variable to search a document by its Id.
 Do not fill both variables or you will have an error.
-</pre>
 
-### Output
+#### Output
 ```
 {
   "result": [{
@@ -186,14 +183,12 @@ If false, deletes only the last version or only the provided version with the do
 
 ### GetFile
 
-<pre>
 Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file you should delete it. The sequence will return the full path of the output file.
 
 Use docPath variable to search a document by its Path.
 Or
 Use docID variable to search a document by its Id.
 Do not fill both variables or you will have an error.
-</pre>
 
 ### Output
 ```
@@ -243,8 +238,9 @@ Get user Personal Files folders from root folder.
 
 ### PutFiles
 
-<pre>
-Puts a file in a CMIS repository. The Sequence will return the folder where the file has been placed.
+### Puts a file in a CMIS repository. 
+
+The Sequence will return the folder where the file has been placed.
 
 Use folderPath variable to put a document in a folder by its Path.
 Or
@@ -263,7 +259,7 @@ For example:
 [{"name": "cmis:description", "value": "sample PDF file created by GV"}]
 </pre>
 
-### Output
+#### Output
 ```
 {
   "result": [{
@@ -305,19 +301,94 @@ For example:
 <td>folderPath</td><td>Target path in the CMIS. For example '/MyFolder'</td>
 </tr>
 <tr>
-<td>properties</td><td><pre>
-(Optional) Properties list for the files. Each entry is a JSON object with the properties to set for the file.
+<td>properties</td><td>(Optional) Properties array for the files. Each entry is a JSON object with the properties to set for the file.
 
+```
 {
 	name: property_name,
 	value: property_value
 }
-</pre></td>
+```
+
+Set 'null' or empty if you don't want to add properties for a file.</td>
 </tr>
 <tr>
-<td>secondaries</td><td><pre>
-(Optional) Secondary Types list for the files. Each entry is a JSON array with the aspects to add for the file.
-</pre></td>
+<td>secondaries</td><td>(Optional) Secondary Types array for the files. Each entry is a JSON array with the aspects to add for the file.
+
+
+For example:
+```
+[
+	"P:cm:titled",
+	"P:custom:prop"
+]
+```
+
+Set 'null' or empty if you don't want to add secondary Types for a file.</td>
+</tr>
+</table>
+
+### UpdateProperties
+
+Updates file properties in a CMIS repository.
+
+Use docPath variable to search a document by its Path.
+Or
+Use docID variable to search a document by its Id.
+Do not fill both variables or you will have an error.
+
+You can pudate document properties using the properties variable.
+Set an array of objects with name/value key value pairs.
+For example:
+[{"name": "cmis:description", "value": "sample PDF file created by GV"}]
+
+### Output
+```
+{
+  "result": [{
+    "filePath": "/Shared/myFile.pdf",
+    "id": "1e1d7d10-a8cd-4e8f-9d7d-10a8cd2e8f10;1.0",
+    "name": "myFile.pdf",
+    "creator": "admin",
+    "creationDate": "2025-06-06T15:37:05Z",
+    "fileSize": 19475,
+    "mimeType": "application/pdf",
+    "properties": [
+        {
+          "id": "alfcmis:nodeRef",
+          "name": "Alfresco Node Ref",
+          "value": "workspace://SpacesStore/2f60771b-92bc-4ac4-a077-1b92bc5ac4b4"
+        },
+        ...
+  }, ...]
+}
+```
+
+
+**variables**
+
+<table>
+<tr>
+<th>name</th><th>comment</th>
+</tr>
+<tr>
+<td>docID</td><td>CMIS Id of the file whose properties are to be updated. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'</td>
+</tr>
+<tr>
+<td>docPath</td><td>CMIS Path of the file whose properties are to be updated. For example '/MyFolder/Myfile.doc'</td>
+</tr>
+<tr>
+<td>properties</td><td>(Optional) Properties array for the file. Each entry is a JSON object with the properties to update for the file.
+
+[
+	{
+		name: property_name,
+		value: property_value
+	}
+]</td>
+</tr>
+<tr>
+<td>secondaries</td><td>(Optional) Secondary Types array for the files. JSON array with the aspects to add for the file.</td>
 </tr>
 </table>
 

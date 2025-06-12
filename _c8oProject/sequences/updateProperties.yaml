@@ -1,39 +1,40 @@
 accessibility: Hidden
 comment: |
-  '### Deletes a file from a CMIS repository.
+  'Updates file properties in a CMIS repository.
   
   Use docPath variable to search a document by its Path.
   Or
   Use docID variable to search a document by its Id.
   Do not fill both variables or you will have an error.
   
-  #### Output
+  You can pudate document properties using the properties variable.
+  Set an array of objects with name/value key value pairs.
+  For example:
+  [{"name": "cmis:description", "value": "sample PDF file created by GV"}]
+  
+  ### Output
   ```
   {
     "result": [{
-      "id": "2f9c8608-c2ca-435a-9c86-08c2ca235ab1;1.0",
-      "name": "camera4.gif",
+      "filePath": "/Shared/myFile.pdf",
+      "id": "1e1d7d10-a8cd-4e8f-9d7d-10a8cd2e8f10;1.0",
+      "name": "myFile.pdf",
       "creator": "admin",
-      "creationDate": "2025-06-04T16:33:17Z",
-      "fileSize": 22982,
-      "mimeType": "image/gif",
+      "creationDate": "2025-06-06T15:37:05Z",
+      "fileSize": 19475,
+      "mimeType": "application/pdf",
       "properties": [
-        {
-          "id": "alfcmis:nodeRef",
-          "name": "Alfresco Node Ref",
-          "value": "workspace://SpacesStore/2f9c8608-c2ca-435a-9c86-08c2ca235ab1"
-        },
-        {
-          "id": "cmis:isImmutable",
-          "name": "Is Immutable",
-          "value": false
-        },
-        ...
-      ]
-    }]
+          {
+            "id": "alfcmis:nodeRef",
+            "name": "Alfresco Node Ref",
+            "value": "workspace://SpacesStore/2f60771b-92bc-4ac4-a077-1b92bc5ac4b4"
+          },
+          ...
+    }, ...]
   }
-  ```'
-↓DeleteFile [steps.SimpleStep-1749546223373]: 
+  ```
+  '
+↓updateProps [steps.SimpleStep-1749746644112]: 
   expression: |
     'var cmis = new JavaImporter(
         org.apache.chemistry.opencmis.client.api,
@@ -66,8 +67,42 @@ comment: |
     			throw new Error("Document not found.");
     		}
     	    log.debug("Found document: " + doc.getName());
-    
+    		
+    		// Document properties
+    	    var props = new HashMap();
+    	    
+    	    // Adding properties objects
+    	    if(properties != null && properties != ""){
+    			var props_res = JSON.parse(properties);
+    			props_res.forEach(function(obj){
+    				if(!("name" in obj)){
+    					throw new Error("Property must defined a ''name'' key.");
+    				} else {
+    					if (!("value" in obj)) {
+    			            obj.value = null;
+    			        }
+    			        log.debug("Update property ''" + obj.name + "'' with value ''" + obj.value + "''");
+    			    	props.put(obj.name, obj.value);
+    				}
+    			});
+    		}
+    		
+    		// Adding Secondary Types
+    		if(secondaries != null && secondaries != ""){
+    			var sec_res = JSON.parse(secondaries);
+    			var secondaryTypes = new ArrayList();
+    			sec_res.forEach(function(type){
+    				secondaryTypes.add(type);
+    				log.debug("Updating aspect ''" + type + "''");
+    			});
+    			props.put("cmis:secondaryObjectTypeIds", secondaryTypes);
+    		}
+    		
+    		// Update Document properties
+    		doc.updateProperties(props);
+    	    		
     		var res_doc = {
+    			"filePath": doc.getPaths().toArray()[0],
     			"id": doc.getId(),
     			"name": doc.getName(),
     			"creator": doc.getCreatedBy(),
@@ -76,11 +111,6 @@ comment: |
     			"mimeType": doc.getContentStreamMimeType()
     		};
     		
-    		// Get document properties
-    		if (doc.getProperties() == null) {
-    		    throw new Error("Properties not found.");
-    		}
-    		
     		var res_props = [];
     		doc.getProperties().forEach(function(prop) {
     		    var value = convertValue(prop.getValue());
@@ -88,17 +118,12 @@ comment: |
     		});
     		
     		res_doc["properties"] = res_props;
-    		
     		res.push(res_doc);
-    		
-    		doc.delete(allVersions != null && allVersions != "" ? allVersions.toLowerCase() == "true" : true);
-    		
-    		log.debug("File deleted: " + JSON.stringify(res));
-    
+    		log.debug("File Properties updated: " + JSON.stringify(res));
     	} catch (e) {
     		// Handle exceptions
-    		log.error("Error: " + e.message);
     		error = e.message;
+    		log.error("Error: " + error);
     		if (e.cause) {
     			log.error("Cause: " + e.cause.message);
     		}
@@ -124,17 +149,17 @@ comment: |
         return value; // Retourne la valeur originale
     }
     '
-↓jIf [steps.IfStep-1749546223376]: 
+↓jIf [steps.IfStep-1749746489460]: 
   condition: error != null
-  ↓Error_structure [steps.XMLErrorStep-1749546223379]: 
+  ↓Error_structure [steps.XMLErrorStep-1749746489463]: 
     message: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
         - SmartType: 
           - ↑mode: JS
           - →→: error
-  ↓Return [steps.ReturnStep-1749546223382]: 
-↓object [steps.JsonToXmlStep-1749546223385]: 
+  ↓Return [steps.ReturnStep-1749746489466]: 
+↓object [steps.JsonToXmlStep-1749746489469]: 
   jsonObject: 
     - xmlizable: 
       - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
@@ -147,26 +172,26 @@ comment: |
       - SmartType: 
         - ↑mode: PLAIN
         - →→: result
-↓docPath [variables.RequestableVariable-1749546223388]: 
-  comment: CMIS Path of the file to delete. For example '/MyFolder/Myfile.doc'
-↓docID [variables.RequestableVariable-1749546223391]: 
-  comment: CMIS ID of the file to delete. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'
-↓allVersions [variables.RequestableVariable-1749546870549]: 
+↓docPath [variables.RequestableVariable-1749746559513]: 
+  comment: CMIS Path of the file whose properties are to be updated. For example '/MyFolder/Myfile.doc'
+↓docID [variables.RequestableVariable-1749746559516]: 
+  comment: CMIS Id of the file whose properties are to be updated. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'
+↓properties [variables.RequestableVariable-1749746946991]: 
   comment: |
-    'If true, deletes all the document versions.<br/>
-    If false, deletes only the last version or only the provided version with the docID like: ''5d47bb40-e241-4fe7-87bb-40e2416fe76a;1.0'''
-  value: true
-↓TestKO [core.TestCase]: 
-  ↓docPath [variables.TestCaseVariable-1749546223395]: 
-    value: /MyFolder/FAKE.DOC
-↓TestKO1 [core.TestCase]: 
-  ↓docPath [variables.TestCaseVariable-1749546223399]: 
-    value: /MyFolder/FAKE.DOC
-  ↓docID [variables.TestCaseVariable-1749546223402]: 
-    value: 123456789
-↓TestOK_id [core.TestCase]: 
-  ↓docID [variables.TestCaseVariable-1749546223406]: 
-    value: 5d47bb40-e241-4fe7-87bb-40e2416fe76a;1.0
-↓TestOK_path [core.TestCase]: 
-  ↓docPath [variables.TestCaseVariable-1749546223410]: 
-    value: /Shared/myFile.pdf
+    '(Optional) Properties array for the file. Each entry is a JSON object with the properties to update for the file.
+    
+    [
+    	{
+    		name: property_name,
+    		value: property_value
+    	}
+    ]'
+↓secondaries [variables.RequestableVariable-1749746952702]: 
+  comment: (Optional) Secondary Types array for the files. JSON array with the aspects to add for the file.
+↓Test_Case [core.TestCase]: 
+  ↓docPath [variables.TestCaseVariable-1749750177359]: 
+    value: /Shared/New_My_File.pdf
+  ↓docID [variables.TestCaseVariable-1749750177361]: 
+  ↓properties [variables.TestCaseVariable-1749750177363]: 
+    value: '[{"name": "cmis:name", "value": "New My File.pdf"}, {"name": "cmis:description", "value": "Updated Properties by GV"}]'
+  ↓secondaries [variables.TestCaseVariable-1749750177365]: 

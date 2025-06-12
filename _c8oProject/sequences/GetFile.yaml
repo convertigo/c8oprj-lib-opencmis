@@ -1,13 +1,11 @@
 accessibility: Hidden
 comment: |
-  '<pre>
-  Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file you should delete it. The sequence will return the full path of the output file.
+  'Gets a file from CMIS repository. The file will be retrieved and saved in a temp directory. When you finish using this file you should delete it. The sequence will return the full path of the output file.
   
   Use docPath variable to search a document by its Path.
   Or
   Use docID variable to search a document by its Id.
   Do not fill both variables or you will have an error.
-  </pre>
   
   ### Output
   ```
