@@ -146,12 +146,12 @@ User name to acess the CMIS
 
 </p></blockquote></details>
 
-<details><summary><b>DeleteFile</b> : ### Deletes a file from a CMIS repository</summary><blockquote><p>
+<details><summary><b>DeleteObject</b> : ### Deletes a file or a folder from a CMIS repository</summary><blockquote><p>
 
 
-## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") DeleteFile
+## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") DeleteObject
 
-### Deletes a file from a CMIS repository.
+### Deletes a file or a folder from a CMIS repository.
 
 Use docPath variable to search a document by its Path.
 Or
@@ -296,12 +296,72 @@ CMIS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
 
 </p></blockquote></details>
 
-<details><summary><b>PersonalFiles</b> : Get user Personal Files folders from root folder</summary><blockquote><p>
+<details><summary><b>GetFolders</b> : #### Get children folders from folderID or folderPath folder</summary><blockquote><p>
 
 
-## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") PersonalFiles
+## ![](https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/sequences/images/genericsequence_color_16x16.png?raw=true "GenericSequence") GetFolders
 
-Get user Personal Files folders from root folder.
+#### Get children folders from folderID or folderPath folder.
+
+#### Output
+```
+{
+  "folders": {
+    "parentFolder": "Company Home",
+    "isRootFolder": true,
+    "children": [
+      {
+        "id": "28759eee-6181-45ee-b59e-ee618185ee3d",
+        "name": "Shared",
+        "path": "/Shared",
+        "description": "Folder to store shared stuff",
+        "isRootFolder": false,
+        "creator": "System",
+        "creationDate": "2025-06-06T17:01:07Z"
+      },
+      ...
+  	]
+  }
+}
+```
+
+<span style="color:DarkGoldenRod">Variables</span>
+
+<table>
+<tr>
+<th>
+name
+</th>
+<th>
+comment
+</th>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;folderID
+</td>
+<td>
+Target ID in the CMIS. For example '16cfc56d-eb6c-4420-8fc5-6deb6c0420c5'
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;folderPath
+</td>
+<td>
+Target path in the CMIS. For example '/MyFolder'
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;type
+</td>
+<td>
+Type of Document to display. Can be "folder" only, "file" only or "both".
+</td>
+</tr>
+</table>
+
 </p></blockquote></details>
 
 <details><summary><b>PutFiles</b> : ### Puts a file in a CMIS repository</summary><blockquote><p>

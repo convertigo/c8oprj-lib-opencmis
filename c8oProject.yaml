@@ -8,12 +8,12 @@
   contextTimeout: 59
   corsOrigin: =Origin
   httpSessionTimeout: 60
-  version: 1.0.7
+  version: 1.0.8
   ↓void [connectors.SqlConnector]: 🗏 connectors/void.yaml
   ↓CheckConnect [sequences.GenericSequence]: 🗏 sequences/CheckConnect.yaml
   ↓Connect [sequences.GenericSequence]: 🗏 sequences/Connect.yaml
-  ↓DeleteFile [sequences.GenericSequence]: 🗏 sequences/DeleteFile.yaml
+  ↓DeleteObject [sequences.GenericSequence]: 🗏 sequences/DeleteObject.yaml
   ↓GetFile [sequences.GenericSequence]: 🗏 sequences/GetFile.yaml
-  ↓PersonalFiles [sequences.GenericSequence]: 🗏 sequences/PersonalFiles.yaml
+  ↓GetFolders [sequences.GenericSequence]: 🗏 sequences/GetFolders.yaml
   ↓PutFiles [sequences.GenericSequence]: 🗏 sequences/PutFiles.yaml
   ↓UpdateProperties [sequences.GenericSequence]: 🗏 sequences/UpdateProperties.yaml

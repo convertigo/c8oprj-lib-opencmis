@@ -1,6 +1,6 @@
 accessibility: Hidden
 comment: |
-  '### Deletes a file from a CMIS repository.
+  '### Deletes a file or a folder from a CMIS repository.
   
   Use docPath variable to search a document by its Path.
   Or
@@ -33,9 +33,12 @@ comment: |
     }]
   }
   ```'
-↓DeleteFile [steps.SimpleStep-1749546223373]: 
+↓Delete [steps.SimpleStep-1749546223373]: 
   expression: |
-    'var cmis = new JavaImporter(
+    'include(''js/utils.js'');
+    
+    // Import required Java classes using JavaImporter
+    var cmis = new JavaImporter(
         org.apache.chemistry.opencmis.client.api,
         org.apache.chemistry.opencmis.client.runtime,
         org.apache.chemistry.opencmis.commons.enums,
@@ -62,38 +65,43 @@ comment: |
     			throw new Error("You must set docID or docPath value. Not both!");
     		}
     	    var doc = (docID != null && docID != "") ? session.getObject(session.createObjectId(docID)) : session.getObjectByPath(docPath);
-    	    if(!(doc instanceof Document)){
+    	    
+    	    log.debug("IsDocument? " + (doc instanceof Document));
+    	    log.debug("IsFolder? " + (doc instanceof Folder));
+    	    log.debug("Found document: " + doc.getName());
+    	    
+    		if(doc instanceof Document){
+    			var res_doc = {
+    				"id": doc.getId(),
+    				"name": doc.getName(),
+    				"creator": doc.getCreatedBy(),
+    				"creationDate": formatReadableDate(doc.getCreationDate()),
+    				"fileSize": doc.getContentStreamLength(),
+    				"mimeType": doc.getContentStreamMimeType()
+    			};
+    			
+    			res_doc["properties"] = getProperties(doc);
+    			res.push(res_doc);
+    						
+    			doc.delete(allVersions != null && allVersions != "" ? allVersions.toLowerCase() == "true" : true);
+    			log.debug("File deleted: " + JSON.stringify(res));
+    		} else if(doc instanceof Folder){
+    			var res_doc = {
+    				"id": doc.getId(),
+    				"name": doc.getName(),
+    				"description": doc.getDescription(),
+    				"isRootFolder": doc.isRootFolder(),
+    				"creator": doc.getCreatedBy(),
+    				"creationDate": formatReadableDate(doc.getCreationDate())
+    			};
+    			
+    			res_doc["properties"] = getProperties(doc);
+    			res.push(res_doc);
+    			
+    			doc.deleteTree(allVersions != null && allVersions != "" ? allVersions.toLowerCase() == "true" : true, UnfileObject.DELETE, true);
+    		} else {
     			throw new Error("Document not found.");
     		}
-    	    log.debug("Found document: " + doc.getName());
-    
-    		var res_doc = {
-    			"id": doc.getId(),
-    			"name": doc.getName(),
-    			"creator": doc.getCreatedBy(),
-    			"creationDate": formatReadableDate(doc.getCreationDate()),
-    			"fileSize": doc.getContentStreamLength(),
-    			"mimeType": doc.getContentStreamMimeType()
-    		};
-    		
-    		// Get document properties
-    		if (doc.getProperties() == null) {
-    		    throw new Error("Properties not found.");
-    		}
-    		
-    		var res_props = [];
-    		doc.getProperties().forEach(function(prop) {
-    		    var value = convertValue(prop.getValue());
-    		    res_props.push({"id": prop.getId(), "name": prop.getDisplayName(), "value": value});
-    		});
-    		
-    		res_doc["properties"] = res_props;
-    		
-    		res.push(res_doc);
-    		
-    		doc.delete(allVersions != null && allVersions != "" ? allVersions.toLowerCase() == "true" : true);
-    		
-    		log.debug("File deleted: " + JSON.stringify(res));
     
     	} catch (e) {
     		// Handle exceptions
@@ -103,25 +111,6 @@ comment: |
     			log.error("Cause: " + e.cause.message);
     		}
     	}
-    }
-    
-    // Fonction utilitaire pour formater une date ISO 8601
-    function formatReadableDate(calendar) {
-        if (calendar == null || calendar == "null") {
-            return null; // Pas de date
-        }
-        var formatter = new java.text.SimpleDateFormat("yyyy-MM-dd''T''HH:mm:ss''Z''");
-        formatter.setTimeZone(java.util.TimeZone.getTimeZone("UTC")); // Assure un format en UTC
-        return formatter.format(calendar.getTime());
-    }
-    
-    function convertValue(value) {
-        if (value instanceof java.math.BigInteger) {
-            return value.toString(); // Conversion en String
-        } else if (value instanceof java.util.GregorianCalendar) {
-            return formatReadableDate(value.getTime()); // Conversion Date → ISO 8601
-        }
-        return value; // Retourne la valeur originale
     }
     '
 ↓jIf [steps.IfStep-1749546223376]: 
@@ -166,7 +155,10 @@ comment: |
     value: 123456789
 ↓TestOK_id [core.TestCase]: 
   ↓docID [variables.TestCaseVariable-1749546223406]: 
-    value: 5d47bb40-e241-4fe7-87bb-40e2416fe76a;1.0
+    value: 57ffb410-6eab-498a-bfb4-106eab198a76
 ↓TestOK_path [core.TestCase]: 
   ↓docPath [variables.TestCaseVariable-1749546223410]: 
     value: /Shared/myFile.pdf
+↓TestOK_path1 [core.TestCase]: 
+  ↓docPath [variables.TestCaseVariable-1749804622430]: 
+    value: /TEMP

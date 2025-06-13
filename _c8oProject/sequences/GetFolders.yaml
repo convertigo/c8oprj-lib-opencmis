@@ -1,0 +1,147 @@
+accessibility: Hidden
+comment: |
+  '#### Get children folders from folderID or folderPath folder.
+  
+  #### Output
+  ```
+  {
+    "folders": {
+      "parentFolder": "Company Home",
+      "isRootFolder": true,
+      "children": [
+        {
+          "id": "28759eee-6181-45ee-b59e-ee618185ee3d",
+          "name": "Shared",
+          "path": "/Shared",
+          "description": "Folder to store shared stuff",
+          "isRootFolder": false,
+          "creator": "System",
+          "creationDate": "2025-06-06T17:01:07Z"
+        },
+        ...
+    	]
+    }
+  }
+  ```'
+↓getFolders [steps.SimpleStep-1749041648203]: 
+  expression: |
+    'include(''js/utils.js'');
+    
+    // Import required Java classes using JavaImporter
+    var cmis = new JavaImporter(
+        org.apache.chemistry.opencmis.client.api,
+        org.apache.chemistry.opencmis.client.runtime,
+        org.apache.chemistry.opencmis.commons.enums,
+        org.apache.chemistry.opencmis.commons,
+        java.util
+    );
+    
+    var error = null;
+    var folders = {};
+    var session = null;
+    
+    with (cmis) {
+    	try {
+    		// get CMISSession
+    		var session = context.httpSession.getAttribute("CMISSession");
+    		if (session == null) {
+    			throw new Error("Session not found. Please connect first.");
+    		}
+    		if(folderID != null && folderID != "" && folderPath != null && folderPath != ""){
+    			throw new Error("You must set folderID or folderPath value. Not both!");
+    		}
+    			
+    	    // Get root folder and print its name
+    	    var root = (folderID != null && folderID !== "") ? session.getObject(session.createObjectId(folderID)) : (folderPath != null && folderPath !== "")  ? session.getObjectByPath(folderPath) : session.getRootFolder();
+    
+    	    log.debug("Parent folder: " + root.getName());
+    	    folders["parentFolder"] = root.getName();
+    	    folders["isRootFolder"] = root.isRootFolder(),
+    	    folders["children"] = [];
+    	
+    	    // List children of the root folder
+    	    var children = root.getChildren();
+    	    var it = children.iterator();
+    	    while (it.hasNext()) {
+    	        var child = it.next();
+    	        if(child instanceof Folder && (type == null || type == "folder" || type == "both")){
+    				folders["children"].push({
+    					"type": "folder",
+    					"id": child.getId(),
+    					"name": child.getName(),
+    					"path": child.getPaths().get(0),
+    					"description": child.getDescription(),
+    					"isRootFolder": child.isRootFolder(),
+    					"creator": child.getCreatedBy(),
+    					"creationDate": formatReadableDate(child.getCreationDate())
+    				});
+    		        log.debug(" - Folder: " + child.getName() + " (" + child.getType().getDisplayName() + ")");
+    	        }
+    	        
+    	        if(child instanceof Document && (type == "file" || type == "both")){
+    				folders["children"].push({
+    					"type": "file",
+    					"filePath": child.getPaths().toArray()[0],
+    					"id": child.getId(),
+    					"name": child.getName(),
+    					"creator": child.getCreatedBy(),
+    					"creationDate": formatReadableDate(child.getCreationDate()),
+    					"fileSize": child.getContentStreamLength(),
+    					"mimeType": child.getContentStreamMimeType()
+    				});
+    			}
+    	    }
+    	} catch (e) {
+    		// Handle exceptions
+    		log.error("Error: " + e.message);
+    		error = e.message;
+    		if (e.cause) {
+    			log.error("Cause: " + e.cause.message);
+    		}
+    	}
+    }
+    '
+↓jIf [steps.IfStep-1749042289280]: 
+  condition: error != null
+  ↓Error_structure [steps.XMLErrorStep-1749042289283]: 
+    message: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: JS
+          - →→: error
+  ↓Return [steps.ReturnStep-1749042289286]: 
+↓object [steps.JsonToXmlStep-1749041993329]: 
+  jsonObject: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: JS
+        - →→: folders
+  key: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+      - SmartType: 
+        - ↑mode: PLAIN
+        - →→: folders
+↓folderPath [variables.RequestableVariable-1749809464594]: 
+  comment: Target path in the CMIS. For example '/MyFolder'
+↓folderID [variables.RequestableVariable-1749809464597]: 
+  comment: Target ID in the CMIS. For example '16cfc56d-eb6c-4420-8fc5-6deb6c0420c5'
+↓type [variables.RequestableVariable-1749820506310]: 
+  comment: Type of Document to display. Can be "folder" only, "file" only or "both".
+  value: folder
+↓Test_Case [core.TestCase]: 
+  ↓folderPath [variables.TestCaseVariable-1749810407545]: 
+  ↓folderID [variables.TestCaseVariable-1749810407547]: 
+    value: 28759eee-6181-45ee-b59e-ee618185ee3d
+↓Test_Case1 [core.TestCase]: 
+  ↓folderID [variables.TestCaseVariable-1749820919200]: 
+    value: 28759eee-6181-45ee-b59e-ee618185ee3d
+  ↓type [variables.TestCaseVariable-1749820930577]: 
+    value: file
+↓Test_Case2 [core.TestCase]: 
+  ↓folderID [variables.TestCaseVariable-1749821096789]: 
+    value: 28759eee-6181-45ee-b59e-ee618185ee3d
+  ↓type [variables.TestCaseVariable-1749821096792]: 
+    value: both

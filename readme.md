@@ -15,9 +15,9 @@ For more technical informations : [documentation](./project.md)
 - [Sequences](#sequences)
     - [CheckConnect](#checkconnect)
     - [Connect](#connect)
-    - [DeleteFile](#deletefile)
+    - [DeleteObject](#deleteobject)
     - [GetFile](#getfile)
-    - [PersonalFiles](#personalfiles)
+    - [GetFolders](#getfolders)
     - [PutFiles](#putfiles)
     - [UpdateProperties](#updateproperties)
 
@@ -127,9 +127,9 @@ Will return the list of folders of the users root Directory with folder name, id
 </tr>
 </table>
 
-### DeleteFile
+### DeleteObject
 
-### Deletes a file from a CMIS repository.
+### Deletes a file or a folder from a CMIS repository.
 
 Use docPath variable to search a document by its Path.
 Or
@@ -232,9 +232,48 @@ Do not fill both variables or you will have an error.
 </tr>
 </table>
 
-### PersonalFiles
+### GetFolders
 
-Get user Personal Files folders from root folder.
+#### Get children folders from folderID or folderPath folder.
+
+#### Output
+```
+{
+  "folders": {
+    "parentFolder": "Company Home",
+    "isRootFolder": true,
+    "children": [
+      {
+        "id": "28759eee-6181-45ee-b59e-ee618185ee3d",
+        "name": "Shared",
+        "path": "/Shared",
+        "description": "Folder to store shared stuff",
+        "isRootFolder": false,
+        "creator": "System",
+        "creationDate": "2025-06-06T17:01:07Z"
+      },
+      ...
+  	]
+  }
+}
+```
+
+**variables**
+
+<table>
+<tr>
+<th>name</th><th>comment</th>
+</tr>
+<tr>
+<td>folderID</td><td>Target ID in the CMIS. For example '16cfc56d-eb6c-4420-8fc5-6deb6c0420c5'</td>
+</tr>
+<tr>
+<td>folderPath</td><td>Target path in the CMIS. For example '/MyFolder'</td>
+</tr>
+<tr>
+<td>type</td><td>Type of Document to display. Can be "folder" only, "file" only or "both".</td>
+</tr>
+</table>
 
 ### PutFiles
 
