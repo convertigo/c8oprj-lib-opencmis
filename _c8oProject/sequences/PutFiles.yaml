@@ -150,7 +150,7 @@ comment: |
     				"mimeType": mimeType
     			};
     			
-    			res_doc["properties"] = getProperties(doc);
+    			res_doc["properties"] = getProperties(newDoc);
     			res.push(res_doc);
     						
     		    // Clean up
@@ -166,19 +166,6 @@ comment: |
     			log.error("Cause: " + e.cause.message);
     		}
     	}
-    }
-    
-    function get_full_path(file_path){
-    	if(file_path != ""){
-    		project_directory_path = context.getProjectDirectory().replace("\\", "/") + "/";
-     		if(file_path.indexOf(".//") != -1){
-      			file_path = project_directory_path + file_path.substring(3);
-    		}
-     		else if(file_path.indexOf("./") != -1){
-      			file_path = project_directory_path + "../" + file_path.substring(3);
-    		}
-    	}
-    	return file_path;
     }
     '
 ↓jIf [steps.IfStep-1744461342359]: 
