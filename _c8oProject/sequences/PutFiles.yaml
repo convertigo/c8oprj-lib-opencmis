@@ -377,6 +377,31 @@ comment: |
             - ↑value: null
           - java.lang.String: 
             - ↑value: '["P:cm:titled"]'
+↓TestOK_folderID_properties_integer [core.TestCase]: 
+  ↓folderPath [variables.TestCaseVariable-1750262742809]: 
+  ↓filePaths [variables.TestCaseMultiValuedVariable-1750262742812]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: .//samples/sample_upload_file.pdf
+  ↓fileNames [variables.TestCaseMultiValuedVariable-1750262742815]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: myFile.pdf
+  ↓folderID [variables.TestCaseVariable-1750262742818]: 
+    value: 28759eee-6181-45ee-b59e-ee618185ee3d
+  ↓properties [variables.TestCaseMultiValuedVariable-1750262742821]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: '[{"name": "cmis:description", "value": 1, "type": "Integer"}]'
 ↓TestOK_spaces [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1749744495377]: 
     value: /Shared

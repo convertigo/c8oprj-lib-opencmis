@@ -30,12 +30,39 @@ function convertValue(value) {
     return value; // Retourne la valeur originale
 }
 
-function formatValue(object){
-	if(object.type == "Date"){
-		var formatter = ("format" in object) ? new java.text.SimpleDateFormat(object.format) : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		return formatter.parse(object.value);
+function formatValue(object) {
+	try {
+		if (!object || !object.type || object.value === undefined) {
+            throw new Error("Invalid object!");
+        }
+		
+	    switch (object.type) {
+	        case "Date":
+	            var formatter = ("format" in object) 
+	                ? new java.text.SimpleDateFormat(object.format) 
+	                : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	            return formatter.parse(object.value);
+	
+	        case "Integer":
+	            return new java.lang.Integer(parseInt(object.value, 10)); // Conversion en entier
+	            
+	        case "BigInteger":
+	            return new java.math.BigInteger(java.lang.String(object.value)); // Conversion en entier
+	            
+	        case "Boolean":
+	            return new java.lang.Boolean(object.value === "true" || object.value === true); // Conversion en booléen
+	
+	        default:
+	            return object.value;
+	    }
+    } catch (e) {
+		// Handle exceptions
+		error = e.message;
+		log.error("Error: " + error);
+		if (e.cause) {
+			log.error("Cause: " + e.cause.message);
+		}
 	}
-	return object.value;
 }
 
 function getProperties(doc){
