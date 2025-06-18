@@ -51,6 +51,9 @@ function formatValue(object) {
 	            
 	        case "Boolean":
 	            return new java.lang.Boolean(object.value === "true" || object.value === true); // Conversion en booléen
+	            
+            case "String":
+	            return new java.lang.String(object.value); // Conversion en string
 	
 	        default:
 	            return object.value;
