@@ -36,23 +36,31 @@ function formatValue(object) {
             throw new Error("Invalid object!");
         }
 		
-	    switch (object.type) {
-	        case "Date":
+	    switch (object.type.toLowerCase()) {
+	        case "date":
 	            var formatter = ("format" in object) 
 	                ? new java.text.SimpleDateFormat(object.format) 
 	                : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	            return formatter.parse(object.value);
 	
-	        case "Integer":
+	        case "long":
+	        case "int":
+	        case "integer":
 	            return new java.lang.Integer(parseInt(object.value, 10)); // Conversion en entier
 	            
-	        case "BigInteger":
+	        case "biginteger":
 	            return new java.math.BigInteger(java.lang.String(object.value)); // Conversion en entier
 	            
-	        case "Boolean":
+            case "float":
+			case "double":
+			case "decimal":
+			case "bigdecimal":
+				return new java.math.BigDecimal(java.lang.String(object.value)); // Conversion en decimal
+	            
+	        case "boolean":
 	            return new java.lang.Boolean(object.value === "true" || object.value === true); // Conversion en booléen
 	            
-            case "String":
+            case "string":
 	            return new java.lang.String(object.value); // Conversion en string
 	
 	        default:
