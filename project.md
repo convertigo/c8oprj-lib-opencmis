@@ -3,7 +3,7 @@
 
 # CMIS connector to Alfresco
 
-This is the CMIS connector for Convertigo enabling to read, and put file in CMIS repositories such as Alfresco. The Connector relies on the Apache OpenCMIS library.
+This is the CMIS connector for Convertigo enabling to read and put file in CMIS repositories such as Alfresco. The Connector relies on the Apache OpenCMIS library.
 
 
 <details><summary><span style="color:DarkGoldenRod"><i>Connectors</i></span></summary><blockquote><p>
