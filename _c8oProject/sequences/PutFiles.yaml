@@ -75,96 +75,98 @@ comment: |
     	    log.debug("Uploading to: " + folder.getPaths().toArray()[0]);
     	
     		// for each filePaths[] loop and upload
-    		for (var i = 0; i < filePaths.length; i++) {	
-    		    // Local file to upload
-    		    var file = new File(get_full_path(filePaths[i]));
-    		    var fileName = (fileNames != null && fileNames[i] != "" && fileNames[i] != "null" && fileNames[i] !== undefined) ? fileNames[i] : file.getName();
-    		    var fileInputStream = new FileInputStream(file);
-    		    var fileLength = file.length();
-    		
-    			// Try to detect MIME type
-    			var mimeType = java.nio.file.Files.probeContentType(file.toPath());
-    			if (mimeType == null) {
-    			     mimeType = "application/octet-stream"; // fallback
+    		for (var i = 0; i < filePaths.length; i++) {
+    			var fileInputStream = null;
+    			var contentStream = null;
+    			
+    			try {
+    			    // Local file to upload
+    			    var file = new File(get_full_path(filePaths[i]));
+    			    var fileName = (fileNames != null && fileNames[i] != "" && fileNames[i] != "null" && fileNames[i] !== undefined) ? fileNames[i] : file.getName();
+    			    var fileLength = file.length();
+    			    
+    			    // Try to detect MIME type
+    				var mimeType = java.nio.file.Files.probeContentType(file.toPath()) || "application/octet-stream";
+    				log.debug("🧪 Detected MIME type: " + mimeType);
+    			    
+    			    // Create CMIS content stream
+    			    fileInputStream = new FileInputStream(file);
+    			    contentStream = session.getObjectFactory().createContentStream(
+    			        fileName,
+    			        fileLength,
+    			        mimeType, 
+    			        fileInputStream
+    			    );
+    			
+    			    // Document properties
+    			    var props = new HashMap();
+    			    props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
+    			    props.put(PropertyIds.NAME, fileName);
+    			    
+    			    // Adding properties objects
+    			    if(properties != null && properties[i] != "" && properties[i] != "null" && properties[i] !== undefined){
+    					var props_res = JSON.parse(properties[i]);
+    					props_res.forEach(function(obj){
+    						if(!("name" in obj)){
+    							throw new Error("Property must defined a ''name'' key.");
+    						} else {
+    							if (!("value" in obj)) {
+    					            obj.value = null;
+    					        }
+    					        if (!("type" in obj)) {
+    					            obj.type = "String";
+    					        }
+    					        var prop_value = formatValue(obj);
+    					        log.debug("Add property ''" + obj.name + "'' with value ''" + prop_value + "''");
+    					    	props.put(obj.name, prop_value);
+    						}
+    					});
+    				}
+    				
+    				// Adding Secondary Types
+    				if(secondaries != null && secondaries[i] != "" && secondaries[i] != "null" && secondaries[i] !== undefined){
+    					var sec_res = JSON.parse(secondaries[i]);
+    					var secondaryTypes = new ArrayList();
+    					sec_res.forEach(function(type){
+    						secondaryTypes.add(type);
+    						log.debug("Adding aspect ''" + type + "''");
+    					});
+    					props.put("cmis:secondaryObjectTypeIds", secondaryTypes);
+    				}
+    			
+    			    // Upload file (create document in the folder)
+    			    var newDoc = folder.createDocument(props, contentStream, VersioningState.MAJOR);
+    			    log.debug("✅ File uploaded: " + newDoc.getName());
+    			    log.debug("CMIS path: " + newDoc.getPaths().toArray()[0]);
+    				
+    				var res_doc = {
+    					"filePath": newDoc.getPaths().toArray()[0],
+    					"id": newDoc.getId(),
+    					"name": newDoc.getName(),
+    					"creator": newDoc.getCreatedBy(),
+    					"creationDate": formatReadableDate(newDoc.getCreationDate()),
+    					"fileSize": newDoc.getContentStreamLength(),
+    					"mimeType": mimeType
+    				};
+    				res_doc["properties"] = getProperties(newDoc);
+    				res.push(res_doc);
+    			} catch (e) {
+    				// Handle exceptions
+    				error = e.message;
+    				log.error("Error: " + error);
+    				if (e.cause) log.error("Cause: " + e.cause.message);
+    			} finally {
+    				// Clean up
+    				if(fileInputStream) fileInputStream.close();
+    		    	if(contentStream && contentStream.getStream()) contentStream.getStream().close();
     			}
-    			log.debug("🧪 Detected MIME type: " + mimeType);
-    			
-    		    // Create CMIS content stream
-    		    var contentStream = session.getObjectFactory().createContentStream(
-    		        fileName,
-    		        fileLength,
-    		        mimeType, 
-    		        fileInputStream
-    		    );
-    		
-    		    // Document properties
-    		    var props = new HashMap();
-    		    props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
-    		    props.put(PropertyIds.NAME, fileName);
-    		    
-    		    // Adding properties objects
-    		    if(properties != null && properties[i] != "" && properties[i] != "null" && properties[i] !== undefined){
-    				var props_res = JSON.parse(properties[i]);
-    				props_res.forEach(function(obj){
-    					if(!("name" in obj)){
-    						throw new Error("Property must defined a ''name'' key.");
-    					} else {
-    						if (!("value" in obj)) {
-    				            obj.value = null;
-    				        }
-    				        if (!("type" in obj)) {
-    				            obj.type = "String";
-    				        }
-    				        
-    				        var prop_value = formatValue(obj);
-    				        
-    				        log.debug("Add property ''" + obj.name + "'' with value ''" + prop_value + "''");
-    				    	props.put(obj.name, prop_value);
-    					}
-    				});
-    			}
-    			
-    			// Adding Secondary Types
-    			if(secondaries != null && secondaries[i] != "" && secondaries[i] != "null" && secondaries[i] !== undefined){
-    				var sec_res = JSON.parse(secondaries[i]);
-    				var secondaryTypes = new ArrayList();
-    				sec_res.forEach(function(type){
-    					secondaryTypes.add(type);
-    					log.debug("Adding aspect ''" + type + "''");
-    				});
-    				props.put("cmis:secondaryObjectTypeIds", secondaryTypes);
-    			}
-    		
-    		    // Upload file (create document in the folder)
-    		    var newDoc = folder.createDocument(props, contentStream, VersioningState.MAJOR);
-    		    log.debug("✅ File uploaded: " + newDoc.getName());
-    		    log.debug("CMIS path: " + newDoc.getPaths().toArray()[0]);
-    			
-    			var res_doc = {
-    				"filePath": newDoc.getPaths().toArray()[0],
-    				"id": newDoc.getId(),
-    				"name": newDoc.getName(),
-    				"creator": newDoc.getCreatedBy(),
-    				"creationDate": formatReadableDate(newDoc.getCreationDate()),
-    				"fileSize": newDoc.getContentStreamLength(),
-    				"mimeType": mimeType
-    			};
-    			
-    			res_doc["properties"] = getProperties(newDoc);
-    			res.push(res_doc);
-    						
-    		    // Clean up
-    		    fileInputStream.close();
-    			contentStream.getStream().close();
     		}
     		log.debug("Files uploaded: " + JSON.stringify(res));
     	} catch (e) {
     		// Handle exceptions
     		error = e.message;
     		log.error("Error: " + error);
-    		if (e.cause) {
-    			log.error("Cause: " + e.cause.message);
-    		}
+    		if (e.cause) log.error("Cause: " + e.cause.message);
     	}
     }
     '
