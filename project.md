@@ -237,7 +237,11 @@ Or
 Use docID variable to search a document by its Id.
 Do not fill both variables or you will have an error.
 
+Can directly perform a download of the file if called with .bin requester.
+
 ### Output
+JSON requester:
+
 ```
 {
   "result": [{
@@ -262,6 +266,22 @@ Do not fill both variables or you will have an error.
       ...
     ]
   }]
+}
+```
+
+BIN requester:
+
+```
+{
+  "attachment": {
+    "text": "",
+    "attr": {
+      "content-type": "application/octet-stream",
+      "local-url": "C:\\Users\\grego\\AppData\\Local\\Temp\\C8oCMIS_4184593159847966614_myFile.pdf",
+      "name": "myFile.pdf",
+      "type": "attachment"
+    }
+  }
 }
 ```
 
