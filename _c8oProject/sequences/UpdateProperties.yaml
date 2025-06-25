@@ -91,7 +91,7 @@ comment: |
     			        var prop_value = formatValue(obj);
     			        
     			        log.debug("Update property ''" + obj.name + "'' with value ''" + obj.value + "''");
-    			    	props.put(obj.name, obj.value);
+    			    	props.put(obj.name, prop_value);
     				}
     			});
     		}

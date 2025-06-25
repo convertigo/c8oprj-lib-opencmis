@@ -110,7 +110,7 @@ comment: |
     		outputPath = tempFile.getAbsolutePath();
     		log.debug("File saved to: " + outputPath);
     		
-    		var isBinary = context.httpServletRequest.getServletPath() && context.httpServletRequest.getServletPath().endsWith(''.bin'') ? true : false;
+    		var isBinary = context.httpServletRequest.getServletPath() && context.httpServletRequest.getServletPath().endsWith(''.bin'') && context.parentContext == null ? true : false;
     		log.debug("isBinary? " + isBinary);
     		
     		var res_doc = {
