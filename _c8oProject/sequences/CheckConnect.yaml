@@ -57,10 +57,6 @@ comment: |
         			throw new Error("Session not found. Please connect first.");
         		}
         		info = session.getRepositoryInfo();
-        		
-        	    var query = "SELECT cmis:objectId FROM cmis:document WHERE cmis:name IS NOT NULL";
-        	    var results = session.query(query, false);
-        	    var next_result = results.iterator().hasNext();
         	    
         	    res = {
         			"isConnected": true,
