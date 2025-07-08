@@ -148,7 +148,9 @@ comment: |
     					"fileSize": newDoc.getContentStreamLength(),
     					"mimeType": mimeType
     				};
-    				res_doc["properties"] = getProperties(newDoc);
+    				if(returnProps == "true")
+    					res_doc["properties"] = getProperties(newDoc);
+    				
     				res.push(res_doc);
     			} catch (e) {
     				// Handle exceptions
@@ -229,6 +231,9 @@ comment: |
     ```
     
     Set ''null'' or empty if you don''t want to add secondary Types for a file.'
+↓returnProps [variables.RequestableVariable-1751533843868]: 
+  comment: If true, will return all props for each files added
+  value: false
 ↓TestOK [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1744461817295]: 
     value: /Shared

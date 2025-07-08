@@ -88,23 +88,20 @@ comment: |
     		
     		// Store session in Convertigo session
     		context.httpSession.setAttribute("CMISSession", session);
-    			
-    	    // Get root folder and print its name
-    	    var root = session.getRootFolder();
-    	    log.debug("Root folder: " + root.getName());
-    	
-    	    // List children of the root folder
-    	    var children = root.getChildren();
-    	    var it = children.iterator();
-    	    while (it.hasNext()) {
-    	        var child = it.next();
-    			folders.push({
-    				name: child.getName(),
-    				path: child.getPaths().get(0),
-    				id	: child.getId()
-    			});
-    	        log.debug(" - " + child.getName() + " (" + child.getType().getDisplayName() + ")");
-    	    }
+    		
+    		info = session.getRepositoryInfo();
+    	    
+    	    res = {
+    			"isConnected": true,
+    			"session": session,
+    			"name": info.getName(),
+    			"id": info.getId(),
+    			"description": info.getDescription(),
+    			"version": info.getCmisVersionSupported(),
+    			"vendor": info.getVendorName(),
+    			"product": info.getProductName(),
+    			"root": info.getRootFolderId()
+    		}
     	} catch (e) {
     		// Handle exceptions
     		log.error("Error: " + e.message);
@@ -142,19 +139,19 @@ comment: |
           - ↑mode: JS
           - →→: error
   ↓Return [steps.ReturnStep-1744454529942]: 
-↓object [steps.JsonToXmlStep-1744454573792]: 
+↓object1 [steps.JsonToXmlStep-1751527756115]: 
   jsonObject: 
     - xmlizable: 
       - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
       - SmartType: 
         - ↑mode: JS
-        - →→: folders
+        - →→: res
   key: 
     - xmlizable: 
       - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
       - SmartType: 
         - ↑mode: PLAIN
-        - →→: folders
+        - →→: result
 ↓user [variables.RequestableVariable-1744453414709]: 
   comment: User name to acess the CMIS
 ↓password [variables.RequestableVariable-1744453422589]: 
