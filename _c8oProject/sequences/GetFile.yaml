@@ -142,9 +142,12 @@ comment: |
         	// Close streams
     	    if(inputStream) inputStream.close();
     	    if(fileOut) fileOut.close();
+    	    if(tempFile && (autoDelFile == "true" || autoDelFile == true)){
+    			context.addFileToDeleteAtEndOfSession(tempFile);
+    			tempFile.deleteOnExit();
+    		}
     	}
-    }
-    '
+    }'
 ↓jIf [steps.IfStep-1744458011202]: 
   condition: error != null
   ↓Error_structure [steps.XMLErrorStep-1744458011205]: 
@@ -192,6 +195,9 @@ comment: |
   comment: CMIS Path of the file to retrieve. For example '/MyFolder/Myfile.doc'
 ↓docID [variables.RequestableVariable-1749054687911]: 
   comment: CMIS ID of the file to retrieve. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'
+↓autoDelFile [variables.RequestableVariable-1752753754934]: 
+  comment: Automatically delete file from temporary folder when user session expires. Default is false.
+  value: false
 ↓TestKO [core.TestCase]: 
   ↓docPath [variables.TestCaseVariable-1744461263910]: 
     value: /MyFolder/FAKE.DOC

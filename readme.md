@@ -245,6 +245,9 @@ BIN requester:
 <th>name</th><th>comment</th>
 </tr>
 <tr>
+<td>autoDelFile</td><td>Automatically delete file from temporary folder when user session expires. Default is false.</td>
+</tr>
+<tr>
 <td>docID</td><td>CMIS ID of the file to retrieve. For example '30d4ef19-c3c2-4611-94ef-19c3c2e6114e'</td>
 </tr>
 <tr>
@@ -370,6 +373,9 @@ For example:
 ```
 
 Set 'null' or empty if you don't want to add properties for a file.</td>
+</tr>
+<tr>
+<td>returnProps</td><td>If true, will return all props for each files added</td>
 </tr>
 <tr>
 <td>secondaries</td><td>(Optional) Secondary Types array for the files. Each entry is a JSON array with the aspects to add for the file.

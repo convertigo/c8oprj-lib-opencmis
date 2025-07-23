@@ -92,12 +92,12 @@ comment: |
     			    // Create CMIS content stream
     			    fileInputStream = new FileInputStream(file);
     			    contentStream = session.getObjectFactory().createContentStream(
-    			        fileName,
+    			        "", // "fileName" -> "" : Can raise a Forbidden exception if fileName contains special characters.
     			        fileLength,
     			        mimeType, 
     			        fileInputStream
     			    );
-    			
+    
     			    // Document properties
     			    var props = new HashMap();
     			    props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
@@ -133,12 +133,12 @@ comment: |
     					});
     					props.put("cmis:secondaryObjectTypeIds", secondaryTypes);
     				}
-    			
+    				
     			    // Upload file (create document in the folder)
     			    var newDoc = folder.createDocument(props, contentStream, VersioningState.MAJOR);
     			    log.debug("✅ File uploaded: " + newDoc.getName());
     			    log.debug("CMIS path: " + newDoc.getPaths().toArray()[0]);
-    				
+    			    
     				var res_doc = {
     					"filePath": newDoc.getPaths().toArray()[0],
     					"id": newDoc.getId(),
@@ -204,7 +204,6 @@ comment: |
   isFileUpload: true
 ↓fileNames [variables.RequestableMultiValuedVariable-1749042782705]: 
   comment: (Optional) File names of the files to upload to CMIS. If none is provided, it will use the default file names from filePaths variable.
-  isFileUpload: true
 ↓properties [variables.RequestableMultiValuedVariable-1749125916199]: 
   comment: |
     '(Optional) Properties array for the files. Each entry is a JSON object with the properties to set for the file.
@@ -234,6 +233,16 @@ comment: |
 ↓returnProps [variables.RequestableVariable-1751533843868]: 
   comment: If true, will return all props for each files added
   value: false
+↓KO [core.TestCase]: 
+  ↓folderID [variables.TestCaseVariable-1752762859024]: 
+    value: 13ec25ea-f73c-45c6-ac25-eaf73c35c642
+  ↓filePaths [variables.TestCaseMultiValuedVariable-1752762859027]: 
+    value: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: C:\Users\grego\Downloads\cerfa_10072-04-010725- Copie (1).pdf
 ↓TestOK [core.TestCase]: 
   ↓folderPath [variables.TestCaseVariable-1744461817295]: 
     value: /Shared

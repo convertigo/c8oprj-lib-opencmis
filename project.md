@@ -298,6 +298,14 @@ comment
 </tr>
 <tr>
 <td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;autoDelFile
+</td>
+<td>
+Automatically delete file from temporary folder when user session expires. Default is false.
+</td>
+</tr>
+<tr>
+<td>
 <img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;docID
 </td>
 <td>
@@ -491,6 +499,14 @@ Target path in the CMIS. For example '/MyFolder'
 ```
 
 Set 'null' or empty if you don't want to add properties for a file.
+</td>
+</tr>
+<tr>
+<td>
+<img src="https://github.com/convertigo/convertigo/blob/develop/engine/src/com/twinsoft/convertigo/beans/variables/images/variable_color_16x16.png?raw=true "  alt="RequestableVariable" >&nbsp;returnProps
+</td>
+<td>
+If true, will return all props for each files added
 </td>
 </tr>
 <tr>
